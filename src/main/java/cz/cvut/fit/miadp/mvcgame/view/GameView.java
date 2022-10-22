@@ -2,6 +2,7 @@ package cz.cvut.fit.miadp.mvcgame.view;
 
 import cz.cvut.fit.miadp.mvcgame.config.MvcGameConfig;
 import cz.cvut.fit.miadp.mvcgame.controller.GameController;
+import cz.cvut.fit.miadp.mvcgame.model.Aspect;
 import cz.cvut.fit.miadp.mvcgame.model.GameModel;
 import cz.cvut.fit.miadp.mvcgame.observer.IObserver;
 import javafx.scene.canvas.GraphicsContext;
@@ -17,7 +18,8 @@ public class GameView implements IObserver {
         this.model = model;
         this.controller = new GameController( model );
         this.gr = null;
-        this.model.registerObserver( this );
+
+        this.model.registerObserver( this, new Aspect( MvcGameConfig.OBSERVABLE_PROP_CHANGE ) );
     }
 
     public GameController getController( ) {
@@ -33,7 +35,11 @@ public class GameView implements IObserver {
     }
 
     private void drawCannon( GraphicsContext gr ) {
-        gr.drawImage( new Image( "images/cannon.png" ), this.model.getCannonPosition( ).getX( ), this.model.getCannonPosition( ).getY( ) );
+        gr.drawImage(
+                new Image( "images/cannon.png" ),
+                this.model.getCannonPosition( ).getComponent( MvcGameConfig.DIM_X ),
+                this.model.getCannonPosition( ).getComponent( MvcGameConfig.DIM_Y )
+        );
     }
 
     public void setGraphicContext( GraphicsContext gr ) {
@@ -43,12 +49,12 @@ public class GameView implements IObserver {
         }
         this.gr = gr;
         if( initCall ) {
-            this.update( );
+            this.update( null );
         }
     }
 
     @Override
-    public void update( ) {
+    public void update( Aspect aspect ) {
         this.render( );
     }
 

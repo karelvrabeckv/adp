@@ -1,7 +1,7 @@
 package cz.cvut.fit.miadp.mvcgame.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import cz.cvut.fit.miadp.mvcgame.config.MvcGameConfig;
 import cz.cvut.fit.miadp.mvcgame.model.gameObjects.Cannon;
@@ -11,11 +11,11 @@ import cz.cvut.fit.miadp.mvcgame.observer.IObserver;
 public class GameModel implements IObservable {
 
     private Cannon cannon;
-    private List<IObserver> observers;
+    private Map<IObserver, Aspect> observers;
 
     public GameModel( ) {
-        this.cannon = new Cannon( new Position( MvcGameConfig.CANNON_POS_X, MvcGameConfig.CANNON_POS_Y ) );
-        this.observers = new ArrayList<IObserver>( );
+        this.cannon = new Cannon( new Vector( MvcGameConfig.CANNON_POS[0], MvcGameConfig.CANNON_POS[1] ) );
+        this.observers = new HashMap<IObserver, Aspect>( );
     }
 
     public void update( ) {
@@ -23,38 +23,39 @@ public class GameModel implements IObservable {
         //destroyDeathEnemies
     }
 
-    public Position getCannonPosition( ) {
+    public Vector getCannonPosition( ) {
         return this.cannon.getPosition( );
     }
 
     public void moveCannonUp( ) {
         this.cannon.moveUp( );
-        this.notifyObservers( );
+
+        this.notifyObservers( new Aspect( MvcGameConfig.OBSERVABLE_PROP_CHANGE ) );
     }
 
     public void moveCannonDown( ) {
         this.cannon.moveDown( );
-        this.notifyObservers( );
+
+        this.notifyObservers( new Aspect( MvcGameConfig.OBSERVABLE_PROP_CHANGE ) );
     }
 
     @Override
-    public void registerObserver( IObserver obs ) {
-        if( !this.observers.contains( obs ) ) {
-            this.observers.add( obs );
-        }
+    public void registerObserver( IObserver observer, Aspect aspect ) {
+        this.observers.put( observer, aspect );
     }
 
     @Override
-    public void unregisterObserver( IObserver obs ) {
-        if( this.observers.contains( obs ) ) {
-            this.observers.remove( obs );
-        }
+    public void unregisterObserver( IObserver observer ) {
+        this.observers.remove( observer );
     }
 
     @Override
-    public void notifyObservers( ) {
-        for( IObserver obs : this.observers ){
-            obs.update( );
+    public void notifyObservers( Aspect aspect ) {
+        for ( Map.Entry<IObserver, Aspect> pair : this.observers.entrySet( ) ) {
+            // update observers registered to the invoked action
+            if ( pair.getValue( ).getName( ).equals( aspect.getName() ) ) {
+                pair.getKey( ).update( aspect );
+            }
         }
     }
 

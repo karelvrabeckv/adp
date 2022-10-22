@@ -1,32 +1,34 @@
 package cz.cvut.fit.miadp.mvcgame.model;
 
+import cz.cvut.fit.miadp.mvcgame.config.MvcGameConfig;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Vector {
+	private List<Integer> components = new ArrayList<Integer>( );
 
-    private int dX = 0;
-	private int dY = 0;
-	
 	public Vector( ) {
+
 	}
 
-	public Vector( int dX, int dY ) {
-		this.dX = dX;
-		this.dY = dY;
+	public Vector( int... components ) {
+		for ( int i = 0; i < MvcGameConfig.NUM_OF_DIMS; i++ ) {
+			this.components.add( components[i] );
+		}
 	}
 
-	public int getDX( ) {
-		return this.dX;
-	}
-    
-    public int getDY( ) {
-		return this.dY;
+	public int getComponent( int i ) {
+		return this.components.get( i );
 	}
 
-    public void setX( int dx ) {
-		this.dX = dx;
-	}
-    
-    public void setY( int dy ) {
-		this.dY = dy;
+	public void setComponent( int i, int component ) {
+		this.components.set( i, component );
 	}
 
+	public void add( Vector vector ) {
+		for ( int i = 0; i < MvcGameConfig.NUM_OF_DIMS; i++ ) {
+			this.setComponent( i, this.getComponent( i ) + vector.getComponent( i ) );
+		}
+	}
 }
