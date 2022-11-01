@@ -1,16 +1,18 @@
 package cz.cvut.fit.miadp.mvcgame.model.gameObjects;
 
+import cz.cvut.fit.miadp.mvcgame.model.Position;
 import cz.cvut.fit.miadp.mvcgame.model.Vector;
+import cz.cvut.fit.miadp.mvcgame.visitor.IVisitable;
 
-public abstract class GameObject {
+public abstract class GameObject implements IVisitable {
 
-    protected Vector position;
+    protected Position position;
     
     public void move( Vector vector ){
         this.position.add( vector );
     }
 
-    public Vector getPosition( ) {
+    public Position getPosition( ) {
         return this.position;
     }
     

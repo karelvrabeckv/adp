@@ -2,24 +2,25 @@ package cz.cvut.fit.miadp.mvcgame.view;
 
 import cz.cvut.fit.miadp.mvcgame.config.MvcGameConfig;
 import cz.cvut.fit.miadp.mvcgame.controller.GameController;
-import cz.cvut.fit.miadp.mvcgame.model.Aspect;
 import cz.cvut.fit.miadp.mvcgame.model.GameModel;
+import cz.cvut.fit.miadp.mvcgame.model.gameObjects.GameObject;
 import cz.cvut.fit.miadp.mvcgame.observer.IObserver;
+import cz.cvut.fit.miadp.mvcgame.visitor.GameRenderer;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 
 public class GameView implements IObserver {
 
     private GameController controller;
     private GameModel model ;
     private GraphicsContext gr;
+    private GameRenderer renderer;
 
     public GameView( GameModel model ){
         this.model = model;
         this.controller = new GameController( model );
         this.gr = null;
-
-        this.model.registerObserver( this, new Aspect( MvcGameConfig.OBSERVABLE_PROP_CHANGE ) );
+        this.model.registerObserver( this );
+        this.renderer = new GameRenderer( );
     }
 
     public GameController getController( ) {
@@ -27,34 +28,20 @@ public class GameView implements IObserver {
     }
 
     public void render( ) {
-        if( this.gr == null ){
-            return;
+        this.gr.clearRect( 0, 0, MvcGameConfig.MAX_X, MvcGameConfig.MAX_Y );
+        for ( GameObject go : this.model.getGameObjects( ) ) {
+            go.acceptVisitor( this.renderer );
         }
-        gr.clearRect( 0, 0, MvcGameConfig.MAX_X, MvcGameConfig.MAX_Y );
-        this.drawCannon( gr );
-    }
-
-    private void drawCannon( GraphicsContext gr ) {
-        gr.drawImage(
-                new Image( "images/cannon.png" ),
-                this.model.getCannonPosition( ).getComponent( MvcGameConfig.DIM_X ),
-                this.model.getCannonPosition( ).getComponent( MvcGameConfig.DIM_Y )
-        );
     }
 
     public void setGraphicContext( GraphicsContext gr ) {
-        boolean initCall = false;
-        if( this.gr == null ) {
-            initCall = true;
-        }
         this.gr = gr;
-        if( initCall ) {
-            this.update( null );
-        }
+        this.renderer.setGraphicContext( gr );
+        this.update( );
     }
 
     @Override
-    public void update( Aspect aspect ) {
+    public void update( ) {
         this.render( );
     }
 
