@@ -3,7 +3,7 @@ package cz.cvut.fit.miadp.mvcgame.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import cz.cvut.fit.miadp.mvcgame.abstractFactory.GameObjectFactory_A;
+import cz.cvut.fit.miadp.mvcgame.abstractFactory.GameObjectFactory_B;
 import cz.cvut.fit.miadp.mvcgame.abstractFactory.IGameObjectFactory;
 import cz.cvut.fit.miadp.mvcgame.config.MvcGameConfig;
 import cz.cvut.fit.miadp.mvcgame.model.gameObjects.AbsCannon;
@@ -11,6 +11,7 @@ import cz.cvut.fit.miadp.mvcgame.model.gameObjects.AbsMissile;
 import cz.cvut.fit.miadp.mvcgame.model.gameObjects.GameObject;
 import cz.cvut.fit.miadp.mvcgame.observer.IObservable;
 import cz.cvut.fit.miadp.mvcgame.observer.IObserver;
+import cz.cvut.fit.miadp.mvcgame.visitor.GameAudio;
 
 public class GameModel implements IObservable {
 
@@ -18,12 +19,14 @@ public class GameModel implements IObservable {
     private List<AbsMissile> missiles;
     private List<IObserver> observers;
     private IGameObjectFactory goFact;
+    private GameAudio audio;
 
     public GameModel( ) {
         this.observers = new ArrayList<IObserver>( );
-        this.goFact = new GameObjectFactory_A( );
+        this.goFact = new GameObjectFactory_B( );
         this.cannon = this.goFact.createCannon( );   
-        this.missiles = new ArrayList<AbsMissile>();     
+        this.missiles = new ArrayList<AbsMissile>();
+        this.audio = new GameAudio( );
     }
 
     public void update( ) {
@@ -32,7 +35,7 @@ public class GameModel implements IObservable {
 
     private void moveMissiles( ) {
         for ( AbsMissile missile : this.missiles ) {
-            missile.move( new Vector( MvcGameConfig.MOVE_STEP, 0 ) );
+            missile.fly();
         }
         this.destroyMissiles( );
         this.notifyObservers( );
@@ -54,11 +57,13 @@ public class GameModel implements IObservable {
 
     public void moveCannonUp( ) {
         this.cannon.moveUp( );
+        this.cannon.acceptVisitor( this.audio );
         this.notifyObservers( );
     }
 
     public void moveCannonDown( ) {
         this.cannon.moveDown( );
+        this.cannon.acceptVisitor( this.audio );
         this.notifyObservers( );
     }
 
@@ -84,7 +89,9 @@ public class GameModel implements IObservable {
     }
 
     public void cannonShoot( ) {
-        this.missiles.add( cannon.shoot( ) ) ;
+        AbsMissile missile = cannon.shoot( );
+        missile.acceptVisitor( this.audio );
+        this.missiles.add( missile ) ;
         this.notifyObservers( );
     }
 

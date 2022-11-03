@@ -1,4 +1,4 @@
-package cz.cvut.fit.miadp.mvcgame.model.gameObjects.family_A;
+package cz.cvut.fit.miadp.mvcgame.model.gameObjects.family_B;
 
 import cz.cvut.fit.miadp.mvcgame.abstractFactory.IGameObjectFactory;
 import cz.cvut.fit.miadp.mvcgame.model.Position;
@@ -6,12 +6,12 @@ import cz.cvut.fit.miadp.mvcgame.model.Vector;
 import cz.cvut.fit.miadp.mvcgame.model.gameObjects.AbsCannon;
 import cz.cvut.fit.miadp.mvcgame.model.gameObjects.AbsMissile;
 
-public class Cannon_A extends AbsCannon {
+public class Cannon_B extends AbsCannon {
 
     private IGameObjectFactory goFact;
-    public static final int MOVE_STEP = 5;
+    public static final int MOVE_STEP = 15;
 
-    public Cannon_A( Position initialPosition, IGameObjectFactory goFact ){
+    public Cannon_B( Position initialPosition, IGameObjectFactory goFact ){
         this.position = initialPosition;
         this.goFact = goFact;
     }
@@ -21,7 +21,7 @@ public class Cannon_A extends AbsCannon {
     }
 
     public void moveDown( ) {
-        this.move( new Vector( 0, MOVE_STEP ) );
+        this.move( new Vector( 0, MOVE_STEP) );
     }
 
     @Override
