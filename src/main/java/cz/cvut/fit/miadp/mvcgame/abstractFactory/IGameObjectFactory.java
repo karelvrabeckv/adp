@@ -7,7 +7,7 @@ import cz.cvut.fit.miadp.mvcgame.model.gameObjects.AbsMissile;
 public interface IGameObjectFactory {
 
     public AbsCannon createCannon( );
-    public AbsMissile createMissile( Position cannonPosition );
+    public AbsMissile createMissile( Position cannonPosition, double initAngle, int initVelocity );
     //createEnemy( );
     
 }

@@ -1,14 +1,33 @@
 package cz.cvut.fit.miadp.mvcgame.model.gameObjects;
 
+import cz.cvut.fit.miadp.mvcgame.model.Position;
 import cz.cvut.fit.miadp.mvcgame.visitor.IVisitor;
 
-public abstract class AbsMissile extends GameObject {
+public abstract class AbsMissile extends LifetimeLimitedGameObject {
 
-    public abstract void fly( );
+    private double initAngle;
+    private int initVelocity;
+
+    protected AbsMissile( Position initialPosition, double initAngle, int initVelocity ) {
+        super( initialPosition );
+        this.initAngle = initAngle;
+        this.initVelocity = initVelocity;
+    }
 
     @Override
     public void acceptVisitor( IVisitor visitor ) {
-        visitor.visitMissile( this );
+        visitor.visitMissile( this ); 
+        
     }
+
+    public int getInitVelocity( ){
+        return this.initVelocity;
+    }
+
+    public double getInitAngle( ) {
+        return this.initAngle;
+    }
+
+    public abstract void move( );
     
 }

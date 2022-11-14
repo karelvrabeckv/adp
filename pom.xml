@@ -30,12 +30,6 @@
       <version>13</version>
     </dependency>
 
-    <dependency>
-      <groupId>javazoom</groupId>
-      <artifactId>jlayer</artifactId>
-      <version>1.0.1</version>
-    </dependency>
-
     <!-- Slick2D dependencies requires Java 8 JDK!!!!
     <dependency>
 			<groupId>javax.jnlp</groupId>

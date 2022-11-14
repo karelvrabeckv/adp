@@ -1,6 +1,8 @@
 package cz.cvut.fit.miadp.mvcgame.controller;
 
 import java.util.List;
+
+import cz.cvut.fit.miadp.mvcgame.memento.CareTaker;
 import cz.cvut.fit.miadp.mvcgame.model.GameModel;
 
 public class GameController {
@@ -23,6 +25,30 @@ public class GameController {
                 case "SPACE":
                     this.model.cannonShoot( );
                     break;
+                case "A":
+                    this.model.aimCannonUp( );
+                    break;
+                case "Y":
+                    this.model.aimCannonDown( );
+                    break;
+                case "F":
+                    this.model.cannonPowerUp( );
+                    break;
+                case "D":
+                    this.model.cannonPowerDown( );
+                    break;
+                case "M":
+                    this.model.toggleMovingStrategy( );
+                    break;
+                case "N":
+                    this.model.toggleShootingMode();
+                    break;
+                case "S":
+                    CareTaker.getInstance( ).createMemento( );
+                    break;
+                case "R":
+                    CareTaker.getInstance( ).setMemento( );
+                    break;   
                 default: 
                     //nothing
             }

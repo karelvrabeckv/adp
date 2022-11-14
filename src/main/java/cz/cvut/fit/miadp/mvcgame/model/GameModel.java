@@ -3,7 +3,7 @@ package cz.cvut.fit.miadp.mvcgame.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import cz.cvut.fit.miadp.mvcgame.abstractFactory.GameObjectFactory_B;
+import cz.cvut.fit.miadp.mvcgame.abstractFactory.GameObjectFactory_A;
 import cz.cvut.fit.miadp.mvcgame.abstractFactory.IGameObjectFactory;
 import cz.cvut.fit.miadp.mvcgame.config.MvcGameConfig;
 import cz.cvut.fit.miadp.mvcgame.model.gameObjects.AbsCannon;
@@ -11,7 +11,9 @@ import cz.cvut.fit.miadp.mvcgame.model.gameObjects.AbsMissile;
 import cz.cvut.fit.miadp.mvcgame.model.gameObjects.GameObject;
 import cz.cvut.fit.miadp.mvcgame.observer.IObservable;
 import cz.cvut.fit.miadp.mvcgame.observer.IObserver;
-import cz.cvut.fit.miadp.mvcgame.visitor.GameAudio;
+import cz.cvut.fit.miadp.mvcgame.strategy.IMovingStrategy;
+import cz.cvut.fit.miadp.mvcgame.strategy.RealisticMovingStrategy;
+import cz.cvut.fit.miadp.mvcgame.strategy.SimpleMovingStrategy;
 
 public class GameModel implements IObservable {
 
@@ -19,14 +21,17 @@ public class GameModel implements IObservable {
     private List<AbsMissile> missiles;
     private List<IObserver> observers;
     private IGameObjectFactory goFact;
-    private GameAudio audio;
+    private IMovingStrategy movingStrategy;
+
+    private int score;
 
     public GameModel( ) {
         this.observers = new ArrayList<IObserver>( );
-        this.goFact = new GameObjectFactory_B( );
+        this.goFact = new GameObjectFactory_A( this );
         this.cannon = this.goFact.createCannon( );   
         this.missiles = new ArrayList<AbsMissile>();
-        this.audio = new GameAudio( );
+        this.movingStrategy = new SimpleMovingStrategy( );   
+        this.score = 0; 
     }
 
     public void update( ) {
@@ -35,7 +40,7 @@ public class GameModel implements IObservable {
 
     private void moveMissiles( ) {
         for ( AbsMissile missile : this.missiles ) {
-            missile.fly();
+            missile.move(  );
         }
         this.destroyMissiles( );
         this.notifyObservers( );
@@ -57,13 +62,31 @@ public class GameModel implements IObservable {
 
     public void moveCannonUp( ) {
         this.cannon.moveUp( );
-        this.cannon.acceptVisitor( this.audio );
         this.notifyObservers( );
     }
 
     public void moveCannonDown( ) {
         this.cannon.moveDown( );
-        this.cannon.acceptVisitor( this.audio );
+        this.notifyObservers( );
+    }
+
+    public void aimCannonUp( ) {
+        this.cannon.aimUp( );
+        this.notifyObservers( );
+    }
+
+    public void aimCannonDown( ) {
+        this.cannon.aimDown( );
+        this.notifyObservers( );
+    }
+
+    public void cannonPowerUp( ) {
+        this.cannon.powerUp( );
+        this.notifyObservers( );
+    }
+
+    public void cannonPowerDown( ) {
+        this.cannon.powerDown( );
         this.notifyObservers( );
     }
 
@@ -89,9 +112,7 @@ public class GameModel implements IObservable {
     }
 
     public void cannonShoot( ) {
-        AbsMissile missile = cannon.shoot( );
-        missile.acceptVisitor( this.audio );
-        this.missiles.add( missile ) ;
+        this.missiles.addAll( cannon.shoot( ) ) ;
         this.notifyObservers( );
     }
 
@@ -104,6 +125,42 @@ public class GameModel implements IObservable {
         go.add( this.cannon );
         go.addAll( this.missiles );
         return go;
+    }
+
+    public IMovingStrategy getMovingStrategy( ){
+        return this.movingStrategy;
+    }
+
+    public void toggleMovingStrategy( ) {
+        if ( this.movingStrategy instanceof SimpleMovingStrategy ) {
+            this.movingStrategy = new RealisticMovingStrategy( );
+        }
+        else if ( this.movingStrategy instanceof RealisticMovingStrategy ){
+            this.movingStrategy = new SimpleMovingStrategy( );
+        }
+        else {
+
+        }
+    }
+
+    public void toggleShootingMode( ){
+        this.cannon.toggleShootingMode( );
+    }
+
+    private class Memento {
+        private int score;
+        // GO positions
+    }
+
+    public Object createMemento( ) {
+        Memento m = new Memento( );
+        m.score = this.score;
+        return m;
+    }
+
+    public void setMemento( Object memento ) {
+        Memento m = ( Memento ) memento;
+        this.score = m.score;
     }
 
 }
