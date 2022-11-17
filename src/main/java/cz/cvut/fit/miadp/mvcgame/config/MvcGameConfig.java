@@ -11,4 +11,5 @@ public class MvcGameConfig {
     public static final double ANGLE_STEP = Math.PI / 18;
     public static final int POWER_STEP = 1;
     public static final double GRAVITY = 9.8;
+    public static final int INIT_NUM_OF_MISSILES = 3;
 }

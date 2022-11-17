@@ -43,6 +43,12 @@ public class GameController {
                 case "N":
                     this.model.toggleShootingMode();
                     break;
+                case "P":
+                    this.model.increaseNumOfMissiles();
+                    break;
+                case "O":
+                    this.model.decreaseNumOfMissiles();
+                    break;
                 case "S":
                     CareTaker.getInstance( ).createMemento( );
                     break;

@@ -11,9 +11,7 @@ import cz.cvut.fit.miadp.mvcgame.model.gameObjects.AbsMissile;
 import cz.cvut.fit.miadp.mvcgame.model.gameObjects.GameObject;
 import cz.cvut.fit.miadp.mvcgame.observer.IObservable;
 import cz.cvut.fit.miadp.mvcgame.observer.IObserver;
-import cz.cvut.fit.miadp.mvcgame.strategy.IMovingStrategy;
-import cz.cvut.fit.miadp.mvcgame.strategy.RealisticMovingStrategy;
-import cz.cvut.fit.miadp.mvcgame.strategy.SimpleMovingStrategy;
+import cz.cvut.fit.miadp.mvcgame.strategy.*;
 
 public class GameModel implements IObservable {
 
@@ -135,7 +133,13 @@ public class GameModel implements IObservable {
         if ( this.movingStrategy instanceof SimpleMovingStrategy ) {
             this.movingStrategy = new RealisticMovingStrategy( );
         }
-        else if ( this.movingStrategy instanceof RealisticMovingStrategy ){
+        else if ( this.movingStrategy instanceof RealisticMovingStrategy ) {
+            this.movingStrategy = new SineMovingStrategy( );
+        }
+        else if ( this.movingStrategy instanceof SineMovingStrategy ) {
+            this.movingStrategy = new SpringMovingStrategy( );
+        }
+        else if ( this.movingStrategy instanceof SpringMovingStrategy ) {
             this.movingStrategy = new SimpleMovingStrategy( );
         }
         else {
@@ -145,6 +149,14 @@ public class GameModel implements IObservable {
 
     public void toggleShootingMode( ){
         this.cannon.toggleShootingMode( );
+    }
+
+    public void increaseNumOfMissiles( ){
+        this.cannon.increaseNumOfMissiles( );
+    }
+
+    public void decreaseNumOfMissiles( ){
+        this.cannon.decreaseNumOfMissiles( );
     }
 
     private class Memento {
