@@ -2,24 +2,33 @@ package cz.cvut.fit.miadp.mvcgame.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+import java.util.Stack;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import cz.cvut.fit.miadp.mvcgame.abstractFactory.GameObjectFactory_A;
 import cz.cvut.fit.miadp.mvcgame.abstractFactory.IGameObjectFactory;
+import cz.cvut.fit.miadp.mvcgame.command.AbstractGameCommand;
 import cz.cvut.fit.miadp.mvcgame.config.MvcGameConfig;
 import cz.cvut.fit.miadp.mvcgame.model.gameObjects.AbsCannon;
 import cz.cvut.fit.miadp.mvcgame.model.gameObjects.AbsMissile;
 import cz.cvut.fit.miadp.mvcgame.model.gameObjects.GameObject;
-import cz.cvut.fit.miadp.mvcgame.observer.IObservable;
 import cz.cvut.fit.miadp.mvcgame.observer.IObserver;
-import cz.cvut.fit.miadp.mvcgame.strategy.*;
+import cz.cvut.fit.miadp.mvcgame.strategy.IMovingStrategy;
+import cz.cvut.fit.miadp.mvcgame.strategy.RealisticMovingStrategy;
+import cz.cvut.fit.miadp.mvcgame.strategy.SimpleMovingStrategy;
 
-public class GameModel implements IObservable {
+public class GameModel implements IGameModel {
 
     private AbsCannon cannon;
     private List<AbsMissile> missiles;
     private List<IObserver> observers;
     private IGameObjectFactory goFact;
     private IMovingStrategy movingStrategy;
+
+    private Queue<AbstractGameCommand> unExecutedCmds;
+    private Stack<AbstractGameCommand> executedCmds;
+    
 
     private int score;
 
@@ -29,11 +38,22 @@ public class GameModel implements IObservable {
         this.cannon = this.goFact.createCannon( );   
         this.missiles = new ArrayList<AbsMissile>();
         this.movingStrategy = new SimpleMovingStrategy( );   
-        this.score = 0; 
+        this.score = 0;
+        this.unExecutedCmds = new LinkedBlockingQueue<AbstractGameCommand>( );
+        this.executedCmds = new Stack<AbstractGameCommand>(); 
     }
 
     public void update( ) {
+        this.executedCmds( );
         this.moveMissiles( );
+    }
+
+    private void executedCmds( ) {
+        while( !this.unExecutedCmds.isEmpty( ) ){
+            AbstractGameCommand cmd = this.unExecutedCmds.poll( );
+            cmd.doExecute( );
+            this.executedCmds.push( cmd );
+        }
     }
 
     private void moveMissiles( ) {
@@ -133,13 +153,7 @@ public class GameModel implements IObservable {
         if ( this.movingStrategy instanceof SimpleMovingStrategy ) {
             this.movingStrategy = new RealisticMovingStrategy( );
         }
-        else if ( this.movingStrategy instanceof RealisticMovingStrategy ) {
-            this.movingStrategy = new SineMovingStrategy( );
-        }
-        else if ( this.movingStrategy instanceof SineMovingStrategy ) {
-            this.movingStrategy = new SpringMovingStrategy( );
-        }
-        else if ( this.movingStrategy instanceof SpringMovingStrategy ) {
+        else if ( this.movingStrategy instanceof RealisticMovingStrategy ){
             this.movingStrategy = new SimpleMovingStrategy( );
         }
         else {
@@ -151,28 +165,40 @@ public class GameModel implements IObservable {
         this.cannon.toggleShootingMode( );
     }
 
-    public void increaseNumOfMissiles( ){
-        this.cannon.increaseNumOfMissiles( );
-    }
-
-    public void decreaseNumOfMissiles( ){
-        this.cannon.decreaseNumOfMissiles( );
-    }
-
     private class Memento {
         private int score;
+        private int cannonX;
+        private int cannonY;
         // GO positions
     }
 
     public Object createMemento( ) {
         Memento m = new Memento( );
         m.score = this.score;
+        m.cannonX = this.getCannonPosition( ).getX( );
+        m.cannonY = this.getCannonPosition( ).getY( );
         return m;
     }
 
     public void setMemento( Object memento ) {
         Memento m = ( Memento ) memento;
         this.score = m.score;
+        this.cannon.getPosition( ).setX( m.cannonX );
+        this.cannon.getPosition( ).setY( m.cannonY );
+    }
+
+    @Override
+    public void registerCommand( AbstractGameCommand cmd ) {
+        this.unExecutedCmds.add( cmd );
+    }
+
+    @Override
+    public void undoLastCommand( ) {
+        if( !this.executedCmds.isEmpty( ) ){
+            AbstractGameCommand cmd = this.executedCmds.pop( );
+            cmd.unExecute( );
+        }
+        this.notifyObservers( );
     }
 
 }

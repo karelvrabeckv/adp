@@ -16,7 +16,6 @@ public class Cannon_A extends AbsCannon {
 
     private double angle;
     private int power;
-    private int numOfMissiles;
     private List<AbsMissile> shootingBatch;
 
     public Cannon_A( Position initialPosition, IGameObjectFactory goFact ){
@@ -24,7 +23,6 @@ public class Cannon_A extends AbsCannon {
         this.goFact = goFact;
         this.power = MvcGameConfig.INIT_POWER;
         this.angle = MvcGameConfig.INIT_ANGLE;
-        this.numOfMissiles = MvcGameConfig.INIT_NUM_OF_MISSILES;
         this.shootingMode = AbsCannon.SINGLE_SHOOTING_MODE;
         this.shootingBatch = new ArrayList<AbsMissile>();
     }
@@ -69,26 +67,11 @@ public class Cannon_A extends AbsCannon {
     @Override
     public void primitiveShoot() {
         this.shootingBatch.add( 
-            this.goFact.createMissile( 
-                new Position( this.getPosition( ).getX( ), this.getPosition( ).getY( ) ),
+            this.goFact.createMissile(
                 this.angle,
                 this.power
             )
         );        
-    }
-
-    public void increaseNumOfMissiles( ) {
-        this.numOfMissiles += 1;
-    }
-
-    public void decreaseNumOfMissiles( ) {
-        if ( this.numOfMissiles > 0 ) {
-            this.numOfMissiles -= 1;
-        }
-    }
-
-    public int getNumOfMissiles( ) {
-        return this.numOfMissiles;
     }
 
 }
