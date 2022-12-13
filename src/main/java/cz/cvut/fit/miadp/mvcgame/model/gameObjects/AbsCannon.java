@@ -30,13 +30,13 @@ public abstract class AbsCannon extends GameObject {
     }
 
     public void toggleShootingMode( ) {
-        if( this.shootingMode instanceof SingleShootingMode ){
+        if ( this.shootingMode instanceof SingleShootingMode ) {
             this.shootingMode = DOUBLE_SHOOTING_MODE;
         }
-        else if( this.shootingMode instanceof DoubleShootingMode ){
+        else if ( this.shootingMode instanceof DoubleShootingMode ) {
             this.shootingMode = SINGLE_SHOOTING_MODE;
         }
-        else{
+        else {
 
         }
     }

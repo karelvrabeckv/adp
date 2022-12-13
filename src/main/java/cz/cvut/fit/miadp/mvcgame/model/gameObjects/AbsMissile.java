@@ -16,8 +16,7 @@ public abstract class AbsMissile extends LifetimeLimitedGameObject {
 
     @Override
     public void acceptVisitor( IVisitor visitor ) {
-        visitor.visitMissile( this ); 
-        
+        visitor.visitMissile( this );
     }
 
     public int getInitVelocity( ){

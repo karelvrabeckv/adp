@@ -18,7 +18,7 @@ public class Cannon_A extends AbsCannon {
     private int power;
     private List<AbsMissile> shootingBatch;
 
-    public Cannon_A( Position initialPosition, IGameObjectFactory goFact ){
+    public Cannon_A( Position initialPosition, IGameObjectFactory goFact ) {
         this.position = initialPosition;
         this.goFact = goFact;
         this.power = MvcGameConfig.INIT_POWER;
@@ -59,7 +59,7 @@ public class Cannon_A extends AbsCannon {
 
     @Override
     public void powerDown() {
-        if ( this.power - MvcGameConfig.POWER_STEP > 0 ){
+        if ( this.power - MvcGameConfig.POWER_STEP > 0 ) {
             this.power -= MvcGameConfig.POWER_STEP;
         }
     }

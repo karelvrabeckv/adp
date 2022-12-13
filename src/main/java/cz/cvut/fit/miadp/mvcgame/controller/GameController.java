@@ -45,6 +45,7 @@ public class GameController {
                     this.model.toggleShootingMode();
                     break;
                 case "B":
+                    // tohle do commandu nepredelavat :D
                     this.model.undoLastCommand( );
                     break;
                  

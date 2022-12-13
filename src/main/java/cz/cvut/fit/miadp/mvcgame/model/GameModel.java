@@ -11,6 +11,7 @@ import cz.cvut.fit.miadp.mvcgame.abstractFactory.IGameObjectFactory;
 import cz.cvut.fit.miadp.mvcgame.command.AbstractGameCommand;
 import cz.cvut.fit.miadp.mvcgame.config.MvcGameConfig;
 import cz.cvut.fit.miadp.mvcgame.model.gameObjects.AbsCannon;
+import cz.cvut.fit.miadp.mvcgame.model.gameObjects.AbsEnemy;
 import cz.cvut.fit.miadp.mvcgame.model.gameObjects.AbsMissile;
 import cz.cvut.fit.miadp.mvcgame.model.gameObjects.GameObject;
 import cz.cvut.fit.miadp.mvcgame.observer.IObserver;
@@ -22,25 +23,37 @@ public class GameModel implements IGameModel {
 
     private AbsCannon cannon;
     private List<AbsMissile> missiles;
-    private List<IObserver> observers;
-    private IGameObjectFactory goFact;
-    private IMovingStrategy movingStrategy;
+    private List<AbsEnemy> enemies;
 
-    private Queue<AbstractGameCommand> unExecutedCmds;
-    private Stack<AbstractGameCommand> executedCmds;
-    
+    private List<IObserver> observers;
+    private IGameObjectFactory factory;
+    private IMovingStrategy movingStrategy;
 
     private int score;
 
+    private Queue<AbstractGameCommand> unExecutedCmds;
+    private Stack<AbstractGameCommand> executedCmds;
+
     public GameModel( ) {
         this.observers = new ArrayList<IObserver>( );
-        this.goFact = new GameObjectFactory_A( this );
-        this.cannon = this.goFact.createCannon( );   
+        this.factory = new GameObjectFactory_A( this );
+        this.cannon = this.factory.createCannon( );
         this.missiles = new ArrayList<AbsMissile>();
+        this.enemies = this.createEnemies();
         this.movingStrategy = new SimpleMovingStrategy( );   
         this.score = 0;
         this.unExecutedCmds = new LinkedBlockingQueue<AbstractGameCommand>( );
         this.executedCmds = new Stack<AbstractGameCommand>(); 
+    }
+
+    public List<AbsEnemy> createEnemies() {
+        List<AbsEnemy> enemies = new ArrayList<AbsEnemy>( );
+
+        for ( int i = 0; i < MvcGameConfig.NUM_OF_ENEMIES; i++ ) {
+            enemies.add( this.factory.createEnemy( ) );
+        }
+
+        return enemies;
     }
 
     public void update( ) {
@@ -139,10 +152,13 @@ public class GameModel implements IGameModel {
     }
 
     public List<GameObject> getGameObjects( ) {
-        List<GameObject> go = new ArrayList<GameObject>();
-        go.add( this.cannon );
-        go.addAll( this.missiles );
-        return go;
+        List<GameObject> gameObjects = new ArrayList<GameObject>( );
+
+        gameObjects.add( this.cannon );
+        gameObjects.addAll( this.missiles );
+        gameObjects.addAll( this.enemies );
+
+        return gameObjects;
     }
 
     public IMovingStrategy getMovingStrategy( ){

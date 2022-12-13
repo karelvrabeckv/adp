@@ -28,8 +28,8 @@ public class GameView implements IObserver {
 
     public void render( ) {
         this.gr.clear( );
-        for ( GameObject go : this.model.getGameObjects( ) ) {
-            go.acceptVisitor( this.renderer );
+        for ( GameObject gameObject : this.model.getGameObjects( ) ) {
+            gameObject.acceptVisitor( this.renderer );
         }
     }
 
