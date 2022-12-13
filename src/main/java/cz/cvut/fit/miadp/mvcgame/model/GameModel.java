@@ -10,10 +10,7 @@ import cz.cvut.fit.miadp.mvcgame.abstractFactory.GameObjectFactory_A;
 import cz.cvut.fit.miadp.mvcgame.abstractFactory.IGameObjectFactory;
 import cz.cvut.fit.miadp.mvcgame.command.AbstractGameCommand;
 import cz.cvut.fit.miadp.mvcgame.config.MvcGameConfig;
-import cz.cvut.fit.miadp.mvcgame.model.gameObjects.AbsCannon;
-import cz.cvut.fit.miadp.mvcgame.model.gameObjects.AbsEnemy;
-import cz.cvut.fit.miadp.mvcgame.model.gameObjects.AbsMissile;
-import cz.cvut.fit.miadp.mvcgame.model.gameObjects.GameObject;
+import cz.cvut.fit.miadp.mvcgame.model.gameObjects.*;
 import cz.cvut.fit.miadp.mvcgame.observer.IObserver;
 import cz.cvut.fit.miadp.mvcgame.strategy.IMovingStrategy;
 import cz.cvut.fit.miadp.mvcgame.strategy.RealisticMovingStrategy;
@@ -24,6 +21,7 @@ public class GameModel implements IGameModel {
     private AbsCannon cannon;
     private List<AbsMissile> missiles;
     private List<AbsEnemy> enemies;
+    private List<AbsCollision> collisions;
 
     private List<IObserver> observers;
     private IGameObjectFactory factory;
@@ -37,16 +35,20 @@ public class GameModel implements IGameModel {
     public GameModel( ) {
         this.observers = new ArrayList<IObserver>( );
         this.factory = new GameObjectFactory_A( this );
+
         this.cannon = this.factory.createCannon( );
-        this.missiles = new ArrayList<AbsMissile>();
-        this.enemies = this.createEnemies();
-        this.movingStrategy = new SimpleMovingStrategy( );   
+        this.missiles = new ArrayList<AbsMissile>( );
+        this.enemies = this.createEnemies( );
+        this.collisions = new ArrayList<AbsCollision>( );
+
+        this.movingStrategy = new SimpleMovingStrategy( );
         this.score = 0;
+
         this.unExecutedCmds = new LinkedBlockingQueue<AbstractGameCommand>( );
-        this.executedCmds = new Stack<AbstractGameCommand>(); 
+        this.executedCmds = new Stack<AbstractGameCommand>( );
     }
 
-    public List<AbsEnemy> createEnemies() {
+    private List<AbsEnemy> createEnemies() {
         List<AbsEnemy> enemies = new ArrayList<AbsEnemy>( );
 
         for ( int i = 0; i < MvcGameConfig.NUM_OF_ENEMIES; i++ ) {
@@ -58,7 +60,12 @@ public class GameModel implements IGameModel {
 
     public void update( ) {
         this.executedCmds( );
+
         this.moveMissiles( );
+        this.destroyMissilesAndEnemies( );
+        this.destroyCollisions( );
+
+        this.notifyObservers( );
     }
 
     private void executedCmds( ) {
@@ -70,21 +77,80 @@ public class GameModel implements IGameModel {
     }
 
     private void moveMissiles( ) {
-        for ( AbsMissile missile : this.missiles ) {
-            missile.move(  );
+        for ( AbsMissile missile : missiles ) {
+            missile.move( );
         }
-        this.destroyMissiles( );
-        this.notifyObservers( );
     }
 
-    private void destroyMissiles( ) {
-        List<AbsMissile> missilesToRemove = new ArrayList<AbsMissile>();
-        for ( AbsMissile missile : this.missiles ) {
-            if( missile.getPosition( ).getX( ) > MvcGameConfig.MAX_X ) {
+    private void destroyMissilesAndEnemies( ) {
+        List<AbsMissile> missilesToRemove = new ArrayList<AbsMissile>( );
+        List<AbsEnemy> enemiesToRemove = new ArrayList<AbsEnemy>( );
+
+        for ( AbsMissile missile : missiles ) {
+            if ( missile.getPosition( ).getX( ) > MvcGameConfig.MAX_X ) {
                 missilesToRemove.add( missile );
             }
+
+            for ( AbsEnemy enemy : enemies ) {
+                if ( missile.getDistanceTo( enemy ) < MvcGameConfig.COLLISION_DISTANCE ) {
+                    collisions.add( enemy.explode( ) ) ;
+
+                    missilesToRemove.add( missile );
+                    enemiesToRemove.add( enemy );
+                }
+            }
         }
-        this.missiles.removeAll(missilesToRemove);
+
+        missiles.removeAll( missilesToRemove );
+        enemies.removeAll( enemiesToRemove );
+    }
+
+    private void destroyCollisions( ) {
+        List<AbsCollision> collisionsToRemove = new ArrayList<AbsCollision>( );
+
+        for ( AbsCollision collision : collisions ) {
+            if ( collision.getAge() > MvcGameConfig.COLLISION_AGE ) {
+                collisionsToRemove.add( collision );
+                enemies.add( factory.createEnemy( ) );
+            }
+        }
+
+        collisions.removeAll( collisionsToRemove );
+    }
+
+    public List<GameObject> getGameObjects( ) {
+        List<GameObject> gameObjects = new ArrayList<GameObject>( );
+
+        gameObjects.add( cannon );
+        gameObjects.addAll( missiles );
+        gameObjects.addAll( enemies );
+        gameObjects.addAll( collisions );
+
+        return gameObjects;
+    }
+
+    public List<AbsMissile> getMissiles( ) {
+        return this.missiles;
+    }
+
+    public IMovingStrategy getMovingStrategy( ){
+        return this.movingStrategy;
+    }
+
+    public void toggleMovingStrategy( ) {
+        if ( this.movingStrategy instanceof SimpleMovingStrategy ) {
+            this.movingStrategy = new RealisticMovingStrategy( );
+        }
+        else if ( this.movingStrategy instanceof RealisticMovingStrategy ){
+            this.movingStrategy = new SimpleMovingStrategy( );
+        }
+        else {
+
+        }
+    }
+
+    public void toggleShootingMode( ){
+        this.cannon.toggleShootingMode( );
     }
 
     public Position getCannonPosition( ) {
@@ -93,31 +159,43 @@ public class GameModel implements IGameModel {
 
     public void moveCannonUp( ) {
         this.cannon.moveUp( );
+
         this.notifyObservers( );
     }
 
     public void moveCannonDown( ) {
         this.cannon.moveDown( );
+
         this.notifyObservers( );
     }
 
     public void aimCannonUp( ) {
         this.cannon.aimUp( );
+
         this.notifyObservers( );
     }
 
     public void aimCannonDown( ) {
         this.cannon.aimDown( );
+
         this.notifyObservers( );
     }
 
     public void cannonPowerUp( ) {
         this.cannon.powerUp( );
+
         this.notifyObservers( );
     }
 
     public void cannonPowerDown( ) {
         this.cannon.powerDown( );
+
+        this.notifyObservers( );
+    }
+
+    public void cannonShoot( ) {
+        this.missiles.addAll( cannon.shoot( ) ) ;
+
         this.notifyObservers( );
     }
 
@@ -140,45 +218,6 @@ public class GameModel implements IGameModel {
         for( IObserver obs : this.observers ){
             obs.update( );
         }
-    }
-
-    public void cannonShoot( ) {
-        this.missiles.addAll( cannon.shoot( ) ) ;
-        this.notifyObservers( );
-    }
-
-    public List<AbsMissile> getMissiles( ) {
-        return this.missiles;
-    }
-
-    public List<GameObject> getGameObjects( ) {
-        List<GameObject> gameObjects = new ArrayList<GameObject>( );
-
-        gameObjects.add( this.cannon );
-        gameObjects.addAll( this.missiles );
-        gameObjects.addAll( this.enemies );
-
-        return gameObjects;
-    }
-
-    public IMovingStrategy getMovingStrategy( ){
-        return this.movingStrategy;
-    }
-
-    public void toggleMovingStrategy( ) {
-        if ( this.movingStrategy instanceof SimpleMovingStrategy ) {
-            this.movingStrategy = new RealisticMovingStrategy( );
-        }
-        else if ( this.movingStrategy instanceof RealisticMovingStrategy ){
-            this.movingStrategy = new SimpleMovingStrategy( );
-        }
-        else {
-
-        }
-    }
-
-    public void toggleShootingMode( ){
-        this.cannon.toggleShootingMode( );
     }
 
     private class Memento {

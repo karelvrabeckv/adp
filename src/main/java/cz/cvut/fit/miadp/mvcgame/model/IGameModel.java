@@ -10,6 +10,14 @@ import cz.cvut.fit.miadp.mvcgame.strategy.IMovingStrategy;
 
 public interface IGameModel extends IObservable {
     public void update( );
+
+    public List<GameObject> getGameObjects( );
+    public List<AbsMissile> getMissiles( );
+
+    public IMovingStrategy getMovingStrategy( );
+    public void toggleMovingStrategy( );
+    public void toggleShootingMode( );
+
     public Position getCannonPosition( );
     public void moveCannonUp( );
     public void moveCannonDown( );
@@ -18,11 +26,7 @@ public interface IGameModel extends IObservable {
     public void cannonPowerUp( );
     public void cannonPowerDown( );
     public void cannonShoot( );
-    public List<AbsMissile> getMissiles( );
-    public List<GameObject> getGameObjects( );
-    public IMovingStrategy getMovingStrategy( );
-    public void toggleMovingStrategy( );
-    public void toggleShootingMode( );
+
     public Object createMemento( );
     public void setMemento( Object memento );
 

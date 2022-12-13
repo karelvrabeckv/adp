@@ -4,8 +4,9 @@ import cz.cvut.fit.miadp.mvcgame.config.MvcGameConfig;
 import cz.cvut.fit.miadp.mvcgame.model.IGameModel;
 import cz.cvut.fit.miadp.mvcgame.model.Position;
 import cz.cvut.fit.miadp.mvcgame.model.gameObjects.family_A.Cannon_A;
-import cz.cvut.fit.miadp.mvcgame.model.gameObjects.family_A.Enemy_A;
 import cz.cvut.fit.miadp.mvcgame.model.gameObjects.family_A.Missile_A;
+import cz.cvut.fit.miadp.mvcgame.model.gameObjects.family_A.Enemy_A;
+import cz.cvut.fit.miadp.mvcgame.model.gameObjects.family_A.Collision_A;
 
 import java.util.Random;
 
@@ -44,7 +45,12 @@ public class GameObjectFactory_A implements IGameObjectFactory {
 
         int type = random.nextInt( MvcGameConfig.NUM_OF_ENEMY_TYPES );
 
-        return new Enemy_A( new Position( x, y ), type );
+        return new Enemy_A( new Position( x, y ), type, this );
+    }
+
+    @Override
+    public Collision_A createCollision( Position position ) {
+        return new Collision_A( position );
     }
     
 }

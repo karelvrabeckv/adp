@@ -21,4 +21,6 @@ public abstract class AbsEnemy extends LifetimeLimitedGameObject {
         return type;
     }
 
+    public abstract AbsCollision explode( );
+
 }

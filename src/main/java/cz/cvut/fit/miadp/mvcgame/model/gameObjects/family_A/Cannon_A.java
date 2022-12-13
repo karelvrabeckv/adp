@@ -12,15 +12,15 @@ import cz.cvut.fit.miadp.mvcgame.model.gameObjects.AbsMissile;
 
 public class Cannon_A extends AbsCannon {
 
-    private IGameObjectFactory goFact;
+    private IGameObjectFactory factory;
 
     private double angle;
     private int power;
     private List<AbsMissile> shootingBatch;
 
-    public Cannon_A( Position initialPosition, IGameObjectFactory goFact ) {
+    public Cannon_A( Position initialPosition, IGameObjectFactory factory ) {
         this.position = initialPosition;
-        this.goFact = goFact;
+        this.factory = factory;
         this.power = MvcGameConfig.INIT_POWER;
         this.angle = MvcGameConfig.INIT_ANGLE;
         this.shootingMode = AbsCannon.SINGLE_SHOOTING_MODE;
@@ -66,12 +66,7 @@ public class Cannon_A extends AbsCannon {
 
     @Override
     public void primitiveShoot() {
-        this.shootingBatch.add( 
-            this.goFact.createMissile(
-                this.angle,
-                this.power
-            )
-        );        
+        this.shootingBatch.add( this.factory.createMissile( this.angle, this.power ) );
     }
 
 }
