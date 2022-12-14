@@ -7,6 +7,8 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
@@ -28,23 +30,28 @@ public class MvcGameJavaFxLauncher extends Application {
 
     @Override
     public void start( Stage stage ) {
-        String winTitle = theMvcGame.getWindowTitle( );
         int winWidth = theMvcGame.getWindowWidth( );
-        int winHeigth = theMvcGame.getWindowHeight( );
-        stage.setTitle( winTitle );
-        Group root = new Group( );
-        Scene theScene = new Scene( root );
-        stage.setScene( theScene );
+        int winHeight = theMvcGame.getWindowHeight( );
 
-        Canvas canvas = new Canvas( winWidth, winHeigth );
+        String winTitle = theMvcGame.getWindowTitle( );
+        stage.setTitle( winTitle );
+
+        Group root = new Group( );
+        Scene scene = new Scene( root );
+        stage.setScene( scene );
+
+        ImageView bg = new ImageView( new Image( "images/background.jpg", winWidth, winHeight, true, true ) );
+        root.getChildren( ).add( bg );
+
+        Canvas canvas = new Canvas( winWidth, winHeight );
         root.getChildren( ).add( canvas );
-        
+
         GraphicsContext gc = canvas.getGraphicsContext2D( );
         IGameGraphics gr = new GameGraphics( new JavaFxGraphics( gc ) );
         theMvcGame.render( gr );
 
         ArrayList<String> pressedKeysCodes = new ArrayList<String>( );
-        theScene.setOnKeyPressed(
+        scene.setOnKeyPressed(
             new EventHandler<KeyEvent>( ) {
                 public void handle( KeyEvent e ) {
                     String code = e.getCode( ).toString( );
@@ -56,7 +63,7 @@ public class MvcGameJavaFxLauncher extends Application {
             }
         );
 
-        theScene.setOnKeyReleased(
+        scene.setOnKeyReleased(
             new EventHandler<KeyEvent>( ) {
                 public void handle( KeyEvent e ) {
                     String code = e.getCode( ).toString( );
@@ -72,7 +79,8 @@ public class MvcGameJavaFxLauncher extends Application {
                 pressedKeysCodes.clear();
                 theMvcGame.update( );
             }
-        }.start( );   
+        }.start( );
+
         stage.show( );
     }
 

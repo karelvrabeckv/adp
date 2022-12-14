@@ -46,7 +46,7 @@ public class MvcGame {
     }
 
     public int getWindowHeight( ) {
-        return  MvcGameConfig.MAX_Y;
+        return MvcGameConfig.MAX_Y;
     }
     
 }
