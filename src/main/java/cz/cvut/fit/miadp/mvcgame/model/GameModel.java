@@ -21,6 +21,8 @@ public class GameModel implements IGameModel {
     private AbsCannon cannon;
     private List<AbsMissile> missiles;
     private List<AbsEnemy> enemies;
+    private List<AbsObstacle> obstacles;
+    private List<AbsBomb> bombs;
     private List<AbsCollision> collisions;
     private AbsGameInfo gameInfo;
 
@@ -33,7 +35,9 @@ public class GameModel implements IGameModel {
 
         this.cannon = this.factory.createCannon( );
         this.missiles = new ArrayList<AbsMissile>( );
-        this.enemies = this.createEnemies( );
+        this.enemies = this.createEnemies( MvcGameConfig.NUM_OF_ENEMIES );
+        this.obstacles = this.createObstacles( MvcGameConfig.NUM_OF_OBSTACLES );
+        this.bombs = this.createBombs( MvcGameConfig.NUM_OF_BOMBS );
         this.collisions = new ArrayList<AbsCollision>( );
         this.gameInfo = this.factory.createGameInfo( );
 
@@ -41,14 +45,34 @@ public class GameModel implements IGameModel {
         this.executedCommands = new Stack<AbstractGameCommand>( );
     }
 
-    private List<AbsEnemy> createEnemies( ) {
+    private List<AbsEnemy> createEnemies( int num ) {
         List<AbsEnemy> enemies = new ArrayList<AbsEnemy>( );
 
-        for ( int i = 0; i < MvcGameConfig.NUM_OF_ENEMIES; i++ ) {
+        for ( int i = 0; i < num; i++ ) {
             enemies.add( this.factory.createEnemy( ) );
         }
 
         return enemies;
+    }
+
+    private List<AbsObstacle> createObstacles( int num ) {
+        List<AbsObstacle> obstacles = new ArrayList<AbsObstacle>( );
+
+        for ( int i = 0; i < num; i++ ) {
+            obstacles.add( this.factory.createObstacle( ) );
+        }
+
+        return obstacles;
+    }
+
+    private List<AbsBomb> createBombs( int num ) {
+        List<AbsBomb> bombs = new ArrayList<AbsBomb>( );
+
+        for ( int i = 0; i < num; i++ ) {
+            bombs.add( this.factory.createBomb( ) );
+        }
+
+        return bombs;
     }
 
 //    private GameInfo createGameInfo( ) {
@@ -62,11 +86,10 @@ public class GameModel implements IGameModel {
 
     public void update( ) {
         this.executedCommands( );
-
         this.moveMissiles( );
-        this.destroyMissilesAndEnemies( );
+        this.destroyObjects( );
         this.destroyCollisions( );
-
+        this.addObjects( );
         this.notifyObservers( );
     }
 
@@ -84,9 +107,10 @@ public class GameModel implements IGameModel {
         }
     }
 
-    private void destroyMissilesAndEnemies( ) {
+    private void destroyObjects( ) {
         List<AbsMissile> missilesToRemove = new ArrayList<AbsMissile>( );
         List<AbsEnemy> enemiesToRemove = new ArrayList<AbsEnemy>( );
+        List<AbsBomb> bombsToRemove = new ArrayList<AbsBomb>( );
 
         for ( AbsMissile missile : missiles ) {
             // check the bound x
@@ -104,15 +128,45 @@ public class GameModel implements IGameModel {
                 if ( missile.getDistanceTo( enemy ) < MvcGameConfig.COLLISION_DISTANCE ) {
                     collisions.add( enemy.explode( ) ) ;
                     gameInfo.setScore( gameInfo.getScore() + 1 );
-
                     missilesToRemove.add( missile );
                     enemiesToRemove.add( enemy );
+                }
+            }
+
+            // check the collisions with collisions
+            for ( AbsCollision collision : collisions ) {
+                if ( missile.getDistanceTo( collision ) < MvcGameConfig.COLLISION_DISTANCE ) {
+                    missilesToRemove.add( missile );
+                }
+            }
+
+            // check the collisions with obstacles
+            for ( AbsObstacle obstacle : obstacles ) {
+                if ( missile.getDistanceTo( obstacle ) < MvcGameConfig.COLLISION_DISTANCE ) {
+                    missilesToRemove.add( missile );
+                }
+            }
+
+            // check the collisions with bombs
+            for ( AbsBomb bomb : bombs ) {
+                if ( missile.getDistanceTo( bomb ) < MvcGameConfig.COLLISION_DISTANCE ) {
+                    missilesToRemove.add( missile );
+                    bombsToRemove.add( bomb );
+
+                    for ( AbsEnemy enemy : enemies ) {
+                        if ( bomb.getDistanceTo( enemy ) < MvcGameConfig.BOMB_DISTANCE ) {
+                            collisions.add( enemy.explode( ) ) ;
+                            gameInfo.setScore( gameInfo.getScore() + 1 );
+                            enemiesToRemove.add( enemy );
+                        }
+                    }
                 }
             }
         }
 
         missiles.removeAll( missilesToRemove );
         enemies.removeAll( enemiesToRemove );
+        bombs.removeAll( bombsToRemove );
     }
 
     private void destroyCollisions( ) {
@@ -121,11 +175,20 @@ public class GameModel implements IGameModel {
         for ( AbsCollision collision : collisions ) {
             if ( collision.getAge() > MvcGameConfig.COLLISION_AGE ) {
                 collisionsToRemove.add( collision );
-                enemies.add( factory.createEnemy( ) );
             }
         }
 
         collisions.removeAll( collisionsToRemove );
+    }
+
+    private void addObjects( ) {
+        int numOfNewBombs = MvcGameConfig.NUM_OF_BOMBS - bombs.size( );
+        List<AbsBomb> newBombs = createBombs( numOfNewBombs );
+        bombs.addAll( newBombs );
+
+        int numOfNewEnemies = MvcGameConfig.NUM_OF_ENEMIES - enemies.size( ) - collisions.size( );
+        List<AbsEnemy> newEnemies = createEnemies( numOfNewEnemies );
+        enemies.addAll( newEnemies );
     }
 
     public List<GameObject> getGameObjects( ) {
@@ -134,6 +197,8 @@ public class GameModel implements IGameModel {
         gameObjects.add( cannon );
         gameObjects.addAll( missiles );
         gameObjects.addAll( enemies );
+        gameObjects.addAll( obstacles );
+        gameObjects.addAll( bombs );
         gameObjects.addAll( collisions );
         gameObjects.add( gameInfo );
 
@@ -146,6 +211,12 @@ public class GameModel implements IGameModel {
     }
     public List<AbsEnemy> getEnemies( ) {
         return this.enemies;
+    }
+    public List<AbsObstacle> getObstacles( ) {
+        return this.obstacles;
+    }
+    public List<AbsBomb> getBombs( ) {
+        return this.bombs;
     }
     public List<AbsCollision> getCollisions( ) {
         return this.collisions;
@@ -166,37 +237,31 @@ public class GameModel implements IGameModel {
 
         this.notifyObservers( );
     }
-
     public void moveCannonRight( ) {
         this.cannon.moveRight( );
 
         this.notifyObservers( );
     }
-
     public void aimCannonUp( ) {
         this.cannon.aimUp( );
 
         this.notifyObservers( );
     }
-
     public void aimCannonDown( ) {
         this.cannon.aimDown( );
 
         this.notifyObservers( );
     }
-
     public void cannonPowerUp( ) {
         this.cannon.powerUp( );
 
         this.notifyObservers( );
     }
-
     public void cannonPowerDown( ) {
         this.cannon.powerDown( );
 
         this.notifyObservers( );
     }
-
     public void cannonShoot( ) {
         List<AbsMissile> newMissiles = cannon.shoot( );
         this.missiles.addAll( newMissiles ) ;
@@ -211,14 +276,12 @@ public class GameModel implements IGameModel {
             this.observers.add( obs );
         }
     }
-
     @Override
     public void unregisterObserver( IObserver obs ) {
         if( this.observers.contains( obs ) ) {
             this.observers.remove( obs );
         }
     }
-
     @Override
     public void notifyObservers( ) {
         for( IObserver obs : this.observers ){

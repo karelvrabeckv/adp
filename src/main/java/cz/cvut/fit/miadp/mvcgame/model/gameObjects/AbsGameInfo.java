@@ -55,6 +55,12 @@ public abstract class AbsGameInfo extends GameObject {
     public int getActiveEnemies( ) {
         return model.getEnemies( ).size( );
     }
+    public int getActiveObstacles( ) {
+        return model.getObstacles( ).size( );
+    }
+    public int getActiveBombs( ) {
+        return model.getBombs( ).size( );
+    }
     public int getActiveCollisions( ) {
         return model.getCollisions( ).size( );
     }

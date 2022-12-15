@@ -9,5 +9,7 @@ public interface IVisitor {
     public void visitEnemy( AbsEnemy enemy );
     public void visitCollision( AbsCollision collision );
     public void visitGameInfo( AbsGameInfo gameInfo );
+    public void visitObstacle( AbsObstacle obstacle );
+    public void visitBomb( AbsBomb bomb );
 
 }

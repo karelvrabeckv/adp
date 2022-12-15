@@ -55,4 +55,24 @@ public class GameObjectFactory_A implements IGameObjectFactory {
         return new GameInfo_A( new Position( MvcGameConfig.GAME_INFO_POS_X, MvcGameConfig.GAME_INFO_POS_Y ), model );
     }
 
+    @Override
+    public Obstacle_A createObstacle() {
+        Random random = new Random( );
+
+        int x = random.nextInt(MvcGameConfig.MAX_X_BOUND - MvcGameConfig.MIN_X_BOUND + 1) + MvcGameConfig.MIN_X_BOUND;
+        int y = random.nextInt(MvcGameConfig.MAX_Y_BOUND - MvcGameConfig.MIN_Y_BOUND + 1) + MvcGameConfig.MIN_Y_BOUND;
+
+        return new Obstacle_A( new Position( x, y ) );
+    }
+
+    @Override
+    public Bomb_A createBomb() {
+        Random random = new Random( );
+
+        int x = random.nextInt(MvcGameConfig.MAX_X_BOUND - MvcGameConfig.MIN_X_BOUND + 1) + MvcGameConfig.MIN_X_BOUND;
+        int y = random.nextInt(MvcGameConfig.MAX_Y_BOUND - MvcGameConfig.MIN_Y_BOUND + 1) + MvcGameConfig.MIN_Y_BOUND;
+
+        return new Bomb_A( new Position( x, y ), this );
+    }
+
 }

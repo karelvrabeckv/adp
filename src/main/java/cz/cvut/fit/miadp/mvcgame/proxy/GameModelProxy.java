@@ -84,6 +84,16 @@ public class GameModelProxy implements IGameModel {
     }
 
     @Override
+    public List<AbsObstacle> getObstacles() {
+        return subject.getObstacles( );
+    }
+
+    @Override
+    public List<AbsBomb> getBombs() {
+        return subject.getBombs( );
+    }
+
+    @Override
     public List<AbsCollision> getCollisions() {
         return this.subject.getCollisions( );
     }

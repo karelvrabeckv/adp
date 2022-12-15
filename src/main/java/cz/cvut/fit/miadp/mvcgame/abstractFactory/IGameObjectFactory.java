@@ -10,5 +10,7 @@ public interface IGameObjectFactory {
     public AbsEnemy createEnemy( );
     public AbsCollision createCollision( Position position );
     public AbsGameInfo createGameInfo( );
+    public AbsObstacle createObstacle( );
+    public AbsBomb createBomb( );
 
 }

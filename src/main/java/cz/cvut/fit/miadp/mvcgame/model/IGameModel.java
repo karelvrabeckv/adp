@@ -14,6 +14,8 @@ public interface IGameModel extends IObservable {
     public AbsCannon getCannon( );
     public List<AbsMissile> getMissiles( );
     public List<AbsEnemy> getEnemies( );
+    public List<AbsObstacle> getObstacles( );
+    public List<AbsBomb> getBombs( );
     public List<AbsCollision> getCollisions( );
     public AbsGameInfo getGameInfo( );
 

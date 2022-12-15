@@ -63,21 +63,39 @@ public class GameRenderer implements IVisitor {
                 gameInfo.offsetPosition( 5 )
         );
         this.gr.drawText(
-                "Active Missiles: " + gameInfo.getActiveMissiles(),
+                "Active Missiles: " + gameInfo.getActiveMissiles( ),
                 gameInfo.offsetPosition( 6 )
         );
         this.gr.drawText(
-                "Active Enemies: " + gameInfo.getActiveEnemies(),
+                "Active Enemies: " + gameInfo.getActiveEnemies( ),
                 gameInfo.offsetPosition( 7 )
         );
         this.gr.drawText(
-                "Active Collisions: " + gameInfo.getActiveCollisions(),
+                "Active Obstacles: " + gameInfo.getActiveObstacles( ),
                 gameInfo.offsetPosition( 8 )
         );
         this.gr.drawText(
-                "Missiles Used: " + gameInfo.getUsedMissiles(),
+                "Active Bombs: " + gameInfo.getActiveBombs( ),
                 gameInfo.offsetPosition( 9 )
         );
+        this.gr.drawText(
+                "Active Collisions: " + gameInfo.getActiveCollisions( ),
+                gameInfo.offsetPosition( 10 )
+        );
+        this.gr.drawText(
+                "Missiles Used: " + gameInfo.getUsedMissiles( ),
+                gameInfo.offsetPosition( 11 )
+        );
+    }
+
+    @Override
+    public void visitObstacle( AbsObstacle obstacle ) {
+        this.gr.drawImage( "images/obstacle.png", obstacle.getPosition( ) );
+    }
+
+    @Override
+    public void visitBomb( AbsBomb bomb ) {
+        this.gr.drawImage( "images/bomb.png", bomb.getPosition( ) );
     }
 
 }

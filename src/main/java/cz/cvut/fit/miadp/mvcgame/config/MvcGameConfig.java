@@ -37,4 +37,11 @@ public class MvcGameConfig {
     public static final int GAME_INFO_POS_X = 10;
     public static final int GAME_INFO_POS_Y = 20;
     public static final int GAME_INFO_OFFSET = 20;
+
+    // obstacles
+    public static final int NUM_OF_OBSTACLES = 5;
+
+    // bombs
+    public static final int NUM_OF_BOMBS = 3;
+    public static final int BOMB_DISTANCE = 150;
 }
