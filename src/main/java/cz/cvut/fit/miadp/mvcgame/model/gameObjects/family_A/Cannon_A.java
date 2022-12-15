@@ -13,7 +13,6 @@ import cz.cvut.fit.miadp.mvcgame.model.gameObjects.AbsMissile;
 public class Cannon_A extends AbsCannon {
 
     private IGameObjectFactory factory;
-
     private double angle;
     private int power;
     private List<AbsMissile> shootingBatch;
@@ -21,18 +20,30 @@ public class Cannon_A extends AbsCannon {
     public Cannon_A( Position initialPosition, IGameObjectFactory factory ) {
         this.position = initialPosition;
         this.factory = factory;
-        this.power = MvcGameConfig.INIT_POWER;
-        this.angle = MvcGameConfig.INIT_ANGLE;
+        this.power = MvcGameConfig.CANNON_INIT_POWER;
+        this.angle = MvcGameConfig.CANNON_INIT_ANGLE;
         this.shootingMode = AbsCannon.SINGLE_SHOOTING_MODE;
         this.shootingBatch = new ArrayList<AbsMissile>();
     }
 
-    public void moveUp( ) {
-        this.move( new Vector( 0, -1 * MvcGameConfig.MOVE_STEP ) );
+    @Override
+    public double getAngle( ) { return angle; }
+
+    @Override
+    public int getPower( ) { return power; }
+
+    @Override
+    public void moveLeft( ) {
+        if ( position.getX( ) - MvcGameConfig.CANNON_MOVE_STEP > MvcGameConfig.CANNON_L_BOUND ) {
+            move( new Vector( -1 * MvcGameConfig.CANNON_MOVE_STEP, 0 ) );
+        }
     }
 
-    public void moveDown( ) {
-        this.move( new Vector( 0, MvcGameConfig.MOVE_STEP ) );
+    @Override
+    public void moveRight( ) {
+        if ( position.getX( ) + MvcGameConfig.CANNON_MOVE_STEP < MvcGameConfig.CANNON_R_BOUND ) {
+            move( new Vector( MvcGameConfig.CANNON_MOVE_STEP, 0 ) );
+        }
     }
 
     @Override
@@ -44,23 +55,29 @@ public class Cannon_A extends AbsCannon {
 
     @Override
     public void aimUp() {
-        this.angle -= MvcGameConfig.ANGLE_STEP;
+        if ( angle - MvcGameConfig.CANNON_ANGLE_STEP > -Math.PI ) {
+            angle -= MvcGameConfig.CANNON_ANGLE_STEP;
+        }
     }
 
     @Override
     public void aimDown() {
-        this.angle += MvcGameConfig.ANGLE_STEP;
+        if ( angle + MvcGameConfig.CANNON_ANGLE_STEP < 0 ) {
+            angle += MvcGameConfig.CANNON_ANGLE_STEP;
+        }
     }
 
     @Override
     public void powerUp() {
-        this.power += MvcGameConfig.POWER_STEP;
+        if ( power + MvcGameConfig.CANNON_POWER_STEP < 25 ) {
+            power += MvcGameConfig.CANNON_POWER_STEP;
+        }
     }
 
     @Override
     public void powerDown() {
-        if ( this.power - MvcGameConfig.POWER_STEP > 0 ) {
-            this.power -= MvcGameConfig.POWER_STEP;
+        if ( power - MvcGameConfig.CANNON_POWER_STEP > 0 ) {
+            power -= MvcGameConfig.CANNON_POWER_STEP;
         }
     }
 

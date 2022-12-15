@@ -3,24 +3,25 @@ package cz.cvut.fit.miadp.mvcgame.model;
 import java.util.List;
 
 import cz.cvut.fit.miadp.mvcgame.command.AbstractGameCommand;
-import cz.cvut.fit.miadp.mvcgame.model.gameObjects.AbsMissile;
-import cz.cvut.fit.miadp.mvcgame.model.gameObjects.GameObject;
+import cz.cvut.fit.miadp.mvcgame.model.gameObjects.*;
 import cz.cvut.fit.miadp.mvcgame.observer.IObservable;
-import cz.cvut.fit.miadp.mvcgame.strategy.IMovingStrategy;
 
 public interface IGameModel extends IObservable {
     public void update( );
 
     public List<GameObject> getGameObjects( );
-    public List<AbsMissile> getMissiles( );
 
-    public IMovingStrategy getMovingStrategy( );
+    public AbsCannon getCannon( );
+    public List<AbsMissile> getMissiles( );
+    public List<AbsEnemy> getEnemies( );
+    public List<AbsCollision> getCollisions( );
+    public AbsGameInfo getGameInfo( );
+
     public void toggleMovingStrategy( );
     public void toggleShootingMode( );
 
-    public Position getCannonPosition( );
-    public void moveCannonUp( );
-    public void moveCannonDown( );
+    public void moveCannonLeft( );
+    public void moveCannonRight( );
     public void aimCannonUp( );
     public void aimCannonDown( );
     public void cannonPowerUp( );

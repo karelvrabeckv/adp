@@ -16,7 +16,7 @@ public class DoubleShootingMode implements IShootingMode {
 
     @Override
     public String getName( ) {
-        return "DoubleShootingMode";
+        return "Double";
     }
     
 }

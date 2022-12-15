@@ -1,10 +1,7 @@
 package cz.cvut.fit.miadp.mvcgame.visitor;
 
 import cz.cvut.fit.miadp.mvcgame.bridge.IGameGraphics;
-import cz.cvut.fit.miadp.mvcgame.model.gameObjects.AbsCannon;
-import cz.cvut.fit.miadp.mvcgame.model.gameObjects.AbsCollision;
-import cz.cvut.fit.miadp.mvcgame.model.gameObjects.AbsEnemy;
-import cz.cvut.fit.miadp.mvcgame.model.gameObjects.AbsMissile;
+import cz.cvut.fit.miadp.mvcgame.model.gameObjects.*;
 
 public class GameRenderer implements IVisitor {
 
@@ -37,6 +34,50 @@ public class GameRenderer implements IVisitor {
     @Override
     public void visitCollision( AbsCollision collision ) {
         this.gr.drawImage( "images/collision.png", collision.getPosition( ) );
+    }
+
+    @Override
+    public void visitGameInfo( AbsGameInfo gameInfo ) {
+        this.gr.drawText(
+                "Time: " + gameInfo.getTime( ) + " s",
+                gameInfo.offsetPosition( 0 )
+        );
+        this.gr.drawText(
+                "Score: " + gameInfo.getScore( ),
+                gameInfo.offsetPosition( 1 )
+        );
+        this.gr.drawText(
+                "Moving Strategy: " + gameInfo.getMovingStrategy( ).getName( ),
+                gameInfo.offsetPosition( 2 )
+        );
+        this.gr.drawText(
+                "Shooting Mode: " + gameInfo.getShootingMode( ).getName( ),
+                gameInfo.offsetPosition( 3 )
+        );
+        this.gr.drawText(
+                "Cannon Angle: " + gameInfo.getCannonAngle( ) + "°",
+                gameInfo.offsetPosition( 4 )
+        );
+        this.gr.drawText(
+                "Cannon Power: " + gameInfo.getCannonPower( ),
+                gameInfo.offsetPosition( 5 )
+        );
+        this.gr.drawText(
+                "Active Missiles: " + gameInfo.getActiveMissiles(),
+                gameInfo.offsetPosition( 6 )
+        );
+        this.gr.drawText(
+                "Active Enemies: " + gameInfo.getActiveEnemies(),
+                gameInfo.offsetPosition( 7 )
+        );
+        this.gr.drawText(
+                "Active Collisions: " + gameInfo.getActiveCollisions(),
+                gameInfo.offsetPosition( 8 )
+        );
+        this.gr.drawText(
+                "Missiles Used: " + gameInfo.getUsedMissiles(),
+                gameInfo.offsetPosition( 9 )
+        );
     }
 
 }

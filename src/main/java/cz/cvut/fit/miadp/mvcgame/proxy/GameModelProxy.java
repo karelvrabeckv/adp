@@ -4,11 +4,8 @@ import java.util.List;
 
 import cz.cvut.fit.miadp.mvcgame.command.AbstractGameCommand;
 import cz.cvut.fit.miadp.mvcgame.model.IGameModel;
-import cz.cvut.fit.miadp.mvcgame.model.Position;
-import cz.cvut.fit.miadp.mvcgame.model.gameObjects.AbsMissile;
-import cz.cvut.fit.miadp.mvcgame.model.gameObjects.GameObject;
+import cz.cvut.fit.miadp.mvcgame.model.gameObjects.*;
 import cz.cvut.fit.miadp.mvcgame.observer.IObserver;
-import cz.cvut.fit.miadp.mvcgame.strategy.IMovingStrategy;
 
 public class GameModelProxy implements IGameModel {
 
@@ -39,18 +36,16 @@ public class GameModelProxy implements IGameModel {
     }
 
     @Override
-    public Position getCannonPosition( ) {
-        return this.subject.getCannonPosition( );
+    public AbsCannon getCannon( ) { return subject.getCannon( ); }
+
+    @Override
+    public void moveCannonLeft( ) {
+        this.subject.moveCannonLeft( );
     }
 
     @Override
-    public void moveCannonUp( ) {
-        this.subject.moveCannonUp( );
-    }
-
-    @Override
-    public void moveCannonDown( ) {
-        this.subject.moveCannonDown( );
+    public void moveCannonRight( ) {
+        this.subject.moveCannonRight( );
     }
 
     @Override
@@ -84,13 +79,23 @@ public class GameModelProxy implements IGameModel {
     }
 
     @Override
+    public List<AbsEnemy> getEnemies() {
+        return this.subject.getEnemies( );
+    }
+
+    @Override
+    public List<AbsCollision> getCollisions() {
+        return this.subject.getCollisions( );
+    }
+
+    @Override
     public List<GameObject> getGameObjects( ) {
         return this.subject.getGameObjects( );
     }
 
     @Override
-    public IMovingStrategy getMovingStrategy( ) {
-        return this.subject.getMovingStrategy( );
+    public AbsGameInfo getGameInfo() {
+        return this.subject.getGameInfo( );
     }
 
     @Override

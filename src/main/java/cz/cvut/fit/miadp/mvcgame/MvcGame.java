@@ -42,11 +42,11 @@ public class MvcGame {
     }
 
     public int getWindowWidth( ) {
-        return MvcGameConfig.MAX_X;
+        return MvcGameConfig.SCREEN_X;
     }
 
     public int getWindowHeight( ) {
-        return MvcGameConfig.MAX_Y;
+        return MvcGameConfig.SCREEN_Y;
     }
     
 }

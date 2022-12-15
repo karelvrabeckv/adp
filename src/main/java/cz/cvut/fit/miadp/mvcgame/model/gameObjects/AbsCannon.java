@@ -13,8 +13,10 @@ public abstract class AbsCannon extends GameObject {
     protected static IShootingMode SINGLE_SHOOTING_MODE = new SingleShootingMode( );
     protected static IShootingMode DOUBLE_SHOOTING_MODE = new DoubleShootingMode( );
 
-    public abstract void moveUp( );
-    public abstract void moveDown( );
+    public abstract double getAngle( );
+    public abstract int getPower( );
+    public abstract void moveLeft( );
+    public abstract void moveRight( );
     public abstract void aimUp( );
     public abstract void aimDown( );
     public abstract void powerUp( );
@@ -23,11 +25,7 @@ public abstract class AbsCannon extends GameObject {
     public abstract List<AbsMissile> shoot( );
     public abstract void primitiveShoot( );
 
-
-    @Override
-    public void acceptVisitor( IVisitor visitor ) {
-        visitor.visitCannon( this );
-    }
+    public IShootingMode getShootingMode( ) { return shootingMode; }
 
     public void toggleShootingMode( ) {
         if ( this.shootingMode instanceof SingleShootingMode ) {
@@ -40,5 +38,10 @@ public abstract class AbsCannon extends GameObject {
 
         }
     }
-    
+
+    @Override
+    public void acceptVisitor( IVisitor visitor ) {
+        visitor.visitCannon( this );
+    }
+
 }

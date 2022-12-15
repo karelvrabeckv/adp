@@ -31,7 +31,7 @@ public class JavaFxGraphics implements IGameGraphicsImplementor {
 
     @Override
     public void clear( ) {
-        this.gr.clearRect( 0, 0, MvcGameConfig.MAX_X,  MvcGameConfig.MAX_Y );
+        this.gr.clearRect( 0, 0, MvcGameConfig.SCREEN_X,  MvcGameConfig.SCREEN_Y );
     }
     
 }

@@ -14,7 +14,7 @@ public class GameView implements IObserver {
     private IGameGraphics gr;
     private GameRenderer renderer;
 
-    public GameView( IGameModel model ){
+    public GameView( IGameModel model ) {
         this.model = model;
         this.controller = new GameController( model );
         this.gr = null;

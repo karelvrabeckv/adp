@@ -17,5 +17,10 @@ public class SimpleMovingStrategy implements IMovingStrategy {
         missile.move( new Vector( dX, dY ) );
 
     }
+
+    @Override
+    public String getName( ) {
+        return "Simple";
+    }
     
 }

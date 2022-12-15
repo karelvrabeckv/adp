@@ -2,8 +2,8 @@ package cz.cvut.fit.miadp.mvcgame.controller;
 
 import java.util.List;
 
-import cz.cvut.fit.miadp.mvcgame.command.MoveCannonDownCmd;
-import cz.cvut.fit.miadp.mvcgame.command.MoveCannonUpCmd;
+import cz.cvut.fit.miadp.mvcgame.command.MoveCannonRightCmd;
+import cz.cvut.fit.miadp.mvcgame.command.MoveCannonLeftCmd;
 import cz.cvut.fit.miadp.mvcgame.model.IGameModel;
 
 public class GameController {
@@ -17,19 +17,19 @@ public class GameController {
     public void processPressedKeys( List<String> pressedKeysCodes ) {
         for( String code : pressedKeysCodes ) {
             switch( code ) {
-                case "UP":
-                    this.model.registerCommand( new MoveCannonUpCmd( this.model ) );
+                case "LEFT":
+                    this.model.registerCommand( new MoveCannonLeftCmd( this.model ) );
                     break;
-                case "DOWN":
-                    this.model.registerCommand( new MoveCannonDownCmd( this.model ) );
+                case "RIGHT":
+                    this.model.registerCommand( new MoveCannonRightCmd( this.model ) );
                     break;
                 case "SPACE":
                     this.model.cannonShoot( );
                     break;
-                case "A":
+                case "UP":
                     this.model.aimCannonUp( );
                     break;
-                case "Y":
+                case "DOWN":
                     this.model.aimCannonDown( );
                     break;
                 case "F":
