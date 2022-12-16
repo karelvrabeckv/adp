@@ -118,7 +118,7 @@ public class GameModel implements IGameModel {
     }
 
     public void update( ) {
-        this.executedCommands( );
+        this.executeCommands( );
         this.moveMissiles( );
         this.destroyObjects( );
         this.destroyCollisions( );
@@ -126,8 +126,8 @@ public class GameModel implements IGameModel {
         this.notifyObservers( );
     }
 
-    private void executedCommands( ) {
-        while( !this.unexecutedCommands.isEmpty( ) ){
+    private void executeCommands( ) {
+        while ( !this.unexecutedCommands.isEmpty( ) ) {
             AbstractGameCommand cmd = this.unexecutedCommands.poll( );
             cmd.doExecute( );
             this.executedCommands.push( cmd );
@@ -290,12 +290,12 @@ public class GameModel implements IGameModel {
 
         this.notifyObservers( );
     }
-    public void cannonPowerUp( ) {
+    public void powerCannonUp( ) {
         this.cannon.powerUp( );
 
         this.notifyObservers( );
     }
-    public void cannonPowerDown( ) {
+    public void powerCannonDown( ) {
         this.cannon.powerDown( );
 
         this.notifyObservers( );
@@ -360,10 +360,11 @@ public class GameModel implements IGameModel {
 
     @Override
     public void undoLastCommand( ) {
-        if( !this.executedCommands.isEmpty( ) ){
+        if ( !this.executedCommands.isEmpty( ) ) {
             AbstractGameCommand cmd = this.executedCommands.pop( );
-            cmd.unExecute( );
+            cmd.undoExecute( );
         }
+
         this.notifyObservers( );
     }
 

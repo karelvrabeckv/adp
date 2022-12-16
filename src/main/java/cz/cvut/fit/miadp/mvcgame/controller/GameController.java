@@ -2,8 +2,7 @@ package cz.cvut.fit.miadp.mvcgame.controller;
 
 import java.util.List;
 
-import cz.cvut.fit.miadp.mvcgame.command.MoveCannonRightCmd;
-import cz.cvut.fit.miadp.mvcgame.command.MoveCannonLeftCmd;
+import cz.cvut.fit.miadp.mvcgame.command.*;
 import cz.cvut.fit.miadp.mvcgame.config.MvcGameConfig;
 import cz.cvut.fit.miadp.mvcgame.model.IGameModel;
 
@@ -19,10 +18,10 @@ public class GameController {
         for( String code : pressedKeysCodes ) {
             switch( code ) {
                 case "UP":
-                    this.model.aimCannonUp( );
+                    this.model.registerCommand( new AimCannonUpCmd( this.model ) );
                     break;
                 case "DOWN":
-                    this.model.aimCannonDown( );
+                    this.model.registerCommand( new AimCannonDownCmd( this.model ) );
                     break;
                 case "LEFT":
                     this.model.registerCommand( new MoveCannonLeftCmd( this.model ) );
@@ -31,35 +30,34 @@ public class GameController {
                     this.model.registerCommand( new MoveCannonRightCmd( this.model ) );
                     break;
                 case "SPACE":
-                    this.model.cannonShoot( );
+                    this.model.registerCommand( new CannonShootCmd( this.model ) );
                     break;
                 case "R":
-                    this.model.restart( );
+                    this.model.registerCommand( new RestartCmd( this.model ) );
                     break;
                 case "I":
-                    this.model.changeDifficulty( MvcGameConfig.EASY_DIFFICULTY );
+                    this.model.registerCommand( new ChangeDifficultyCmd( this.model, MvcGameConfig.EASY_DIFFICULTY ) );
                     break;
                 case "O":
-                    this.model.changeDifficulty( MvcGameConfig.NORMAL_DIFFICULTY );
+                    this.model.registerCommand( new ChangeDifficultyCmd( this.model, MvcGameConfig.NORMAL_DIFFICULTY ) );
                     break;
                 case "P":
-                    this.model.changeDifficulty( MvcGameConfig.HARD_DIFFICULTY );
-                    break;
-                case "E":
-                    // tohle do commandu nepredelavat :D
-                    this.model.undoLastCommand( );
+                    this.model.registerCommand( new ChangeDifficultyCmd( this.model, MvcGameConfig.HARD_DIFFICULTY ) );
                     break;
                 case "W":
-                    this.model.cannonPowerUp( );
+                    this.model.registerCommand( new PowerCannonUpCmd( this.model ) );
                     break;
                 case "Q":
-                    this.model.cannonPowerDown( );
+                    this.model.registerCommand( new PowerCannonDownCmd( this.model ) );
                     break;
                 case "M":
-                    this.model.toggleMovingStrategy( );
+                    this.model.registerCommand( new ToggleMovingStrategyCmd( this.model ) );
                     break;
                 case "S":
-                    this.model.toggleShootingMode();
+                    this.model.registerCommand( new ToggleShootingModeCmd( this.model ) );
+                    break;
+                case "E":
+                    this.model.undoLastCommand( );
                     break;
                 default: 
                     // nothing

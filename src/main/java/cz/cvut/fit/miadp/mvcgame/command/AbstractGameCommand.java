@@ -9,12 +9,12 @@ public abstract class AbstractGameCommand {
 
     protected abstract void execute( );
 
-    public void doExecute( ){
+    public void doExecute( ) {
         this.memento = this.subject.createMemento( );
         this.execute( );
     }
 
-    public void unExecute( ){
+    public void undoExecute( ){
         this.subject.setMemento( this.memento );
     }
     

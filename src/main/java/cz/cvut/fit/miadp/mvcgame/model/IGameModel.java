@@ -30,8 +30,8 @@ public interface IGameModel extends IObservable {
     public void moveCannonRight( );
     public void aimCannonUp( );
     public void aimCannonDown( );
-    public void cannonPowerUp( );
-    public void cannonPowerDown( );
+    public void powerCannonUp( );
+    public void powerCannonDown( );
     public void cannonShoot( );
 
     public Object createMemento( );

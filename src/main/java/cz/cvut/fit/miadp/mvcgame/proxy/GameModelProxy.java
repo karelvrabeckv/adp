@@ -66,13 +66,13 @@ public class GameModelProxy implements IGameModel {
     }
 
     @Override
-    public void cannonPowerUp( ) {
-        this.subject.cannonPowerUp( );
+    public void powerCannonUp( ) {
+        this.subject.powerCannonUp( );
     }
 
     @Override
-    public void cannonPowerDown( ) {
-        this.subject.cannonPowerDown( );
+    public void powerCannonDown( ) {
+        this.subject.powerCannonDown( );
     }
 
     @Override
