@@ -23,21 +23,30 @@ public abstract class AbsGameInfo extends GameObject {
 
     public abstract Position offsetPosition( int multiplier );
 
-    public long getTime( ) {
-        return ChronoUnit.MILLIS.between(start, LocalDateTime.now( )) / 1000;
+    public String getDifficultyName( ) {
+        return model.getDifficulty( ).getName( );
     }
+    public long getTime( ) {
+        int maxTime = getMaxTime( );
+        long currTime = ChronoUnit.MILLIS.between( start, LocalDateTime.now( ) ) / 1000;
+
+        return Math.min( currTime, maxTime );
+    }
+    public int getMaxTime( ) { return model.getDifficulty( ).getMaxTime( ); }
     public int getScore( ) {
-        return score;
+        return Math.min( score, getScoreToReach( ) );
     }
     public void setScore( int score ) {
         this.score = score;
     }
-    public int getUsedMissiles( ) {
+    public int getScoreToReach( ) { return model.getDifficulty( ).getScoreToReach( ); }
+    public int getUsedMissiles( ){
         return usedMissiles;
     }
-    public void setUsedMissiles( int usedMissiles ) {
+    public void setUsedMissiles( int usedMissiles ){
         this.usedMissiles = usedMissiles;
     }
+    public int getTotalMissiles( ) { return model.getDifficulty( ).getTotalMissiles( ); }
 
     public IShootingMode getShootingMode( ) {
         return model.getCannon( ).getShootingMode( );
@@ -73,11 +82,8 @@ public abstract class AbsGameInfo extends GameObject {
         if ( movingStrategy instanceof SimpleMovingStrategy) {
             movingStrategy = REALISTIC_MOVING_STRATEGY;
         }
-        else if ( movingStrategy instanceof RealisticMovingStrategy ){
+        else if ( movingStrategy instanceof RealisticMovingStrategy ) {
             movingStrategy = SIMPLE_MOVING_STRATEGY;
-        }
-        else {
-
         }
     }
 

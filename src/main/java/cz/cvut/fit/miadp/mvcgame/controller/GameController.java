@@ -4,6 +4,7 @@ import java.util.List;
 
 import cz.cvut.fit.miadp.mvcgame.command.MoveCannonRightCmd;
 import cz.cvut.fit.miadp.mvcgame.command.MoveCannonLeftCmd;
+import cz.cvut.fit.miadp.mvcgame.config.MvcGameConfig;
 import cz.cvut.fit.miadp.mvcgame.model.IGameModel;
 
 public class GameController {
@@ -17,6 +18,12 @@ public class GameController {
     public void processPressedKeys( List<String> pressedKeysCodes ) {
         for( String code : pressedKeysCodes ) {
             switch( code ) {
+                case "UP":
+                    this.model.aimCannonUp( );
+                    break;
+                case "DOWN":
+                    this.model.aimCannonDown( );
+                    break;
                 case "LEFT":
                     this.model.registerCommand( new MoveCannonLeftCmd( this.model ) );
                     break;
@@ -26,31 +33,36 @@ public class GameController {
                 case "SPACE":
                     this.model.cannonShoot( );
                     break;
-                case "UP":
-                    this.model.aimCannonUp( );
+                case "R":
+                    this.model.restart( );
                     break;
-                case "DOWN":
-                    this.model.aimCannonDown( );
+                case "I":
+                    this.model.changeDifficulty( MvcGameConfig.EASY_DIFFICULTY );
                     break;
-                case "F":
+                case "O":
+                    this.model.changeDifficulty( MvcGameConfig.NORMAL_DIFFICULTY );
+                    break;
+                case "P":
+                    this.model.changeDifficulty( MvcGameConfig.HARD_DIFFICULTY );
+                    break;
+                case "E":
+                    // tohle do commandu nepredelavat :D
+                    this.model.undoLastCommand( );
+                    break;
+                case "W":
                     this.model.cannonPowerUp( );
                     break;
-                case "D":
+                case "Q":
                     this.model.cannonPowerDown( );
                     break;
                 case "M":
                     this.model.toggleMovingStrategy( );
                     break;
-                case "N":
+                case "S":
                     this.model.toggleShootingMode();
                     break;
-                case "B":
-                    // tohle do commandu nepredelavat :D
-                    this.model.undoLastCommand( );
-                    break;
-                 
                 default: 
-                    //nothing
+                    // nothing
             }
         }
     }

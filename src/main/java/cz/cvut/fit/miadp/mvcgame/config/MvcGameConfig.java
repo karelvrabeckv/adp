@@ -1,6 +1,11 @@
 package cz.cvut.fit.miadp.mvcgame.config;
 
 public class MvcGameConfig {
+    // difficulty
+    public static final String EASY_DIFFICULTY = "Easy";
+    public static final String NORMAL_DIFFICULTY = "Normal";
+    public static final String HARD_DIFFICULTY = "Hard";
+
     // screen
     public static final int SCREEN_X = 1280;
     public static final int SCREEN_Y = 720;
@@ -24,7 +29,6 @@ public class MvcGameConfig {
     public static final int COLLISION_AGE = 3000;
 
     // enemies
-    public static final int NUM_OF_ENEMIES = 10;
     public static final int NUM_OF_ENEMY_TYPES = 2;
 
     // bounds for enemies
@@ -38,10 +42,6 @@ public class MvcGameConfig {
     public static final int GAME_INFO_POS_Y = 20;
     public static final int GAME_INFO_OFFSET = 20;
 
-    // obstacles
-    public static final int NUM_OF_OBSTACLES = 5;
-
     // bombs
-    public static final int NUM_OF_BOMBS = 3;
     public static final int BOMB_DISTANCE = 150;
 }

@@ -1,6 +1,7 @@
 package cz.cvut.fit.miadp.mvcgame.visitor;
 
 import cz.cvut.fit.miadp.mvcgame.bridge.IGameGraphics;
+import cz.cvut.fit.miadp.mvcgame.config.MvcGameConfig;
 import cz.cvut.fit.miadp.mvcgame.model.gameObjects.*;
 
 public class GameRenderer implements IVisitor {
@@ -38,53 +39,59 @@ public class GameRenderer implements IVisitor {
 
     @Override
     public void visitGameInfo( AbsGameInfo gameInfo ) {
+        int multiplier = 0;
+
         this.gr.drawText(
-                "Time: " + gameInfo.getTime( ) + " s",
-                gameInfo.offsetPosition( 0 )
+                "Difficulty: " + gameInfo.getDifficultyName( ),
+                gameInfo.offsetPosition( multiplier++ )
         );
         this.gr.drawText(
-                "Score: " + gameInfo.getScore( ),
-                gameInfo.offsetPosition( 1 )
+                "Time: " + gameInfo.getTime( ) + " / " + gameInfo.getMaxTime( ) + " s",
+                gameInfo.offsetPosition( multiplier++ )
+        );
+        this.gr.drawText(
+                "Score: " + gameInfo.getScore( ) + " / " + gameInfo.getScoreToReach( ),
+                gameInfo.offsetPosition( multiplier++ )
         );
         this.gr.drawText(
                 "Moving Strategy: " + gameInfo.getMovingStrategy( ).getName( ),
-                gameInfo.offsetPosition( 2 )
+                gameInfo.offsetPosition( multiplier++ )
         );
         this.gr.drawText(
                 "Shooting Mode: " + gameInfo.getShootingMode( ).getName( ),
-                gameInfo.offsetPosition( 3 )
+                gameInfo.offsetPosition( multiplier++ )
         );
         this.gr.drawText(
                 "Cannon Angle: " + gameInfo.getCannonAngle( ) + "°",
-                gameInfo.offsetPosition( 4 )
+                gameInfo.offsetPosition( multiplier++ )
         );
         this.gr.drawText(
                 "Cannon Power: " + gameInfo.getCannonPower( ),
-                gameInfo.offsetPosition( 5 )
+                gameInfo.offsetPosition( multiplier++ )
         );
         this.gr.drawText(
                 "Active Missiles: " + gameInfo.getActiveMissiles( ),
-                gameInfo.offsetPosition( 6 )
+                gameInfo.offsetPosition( multiplier++ )
         );
         this.gr.drawText(
                 "Active Enemies: " + gameInfo.getActiveEnemies( ),
-                gameInfo.offsetPosition( 7 )
+                gameInfo.offsetPosition( multiplier++ )
         );
         this.gr.drawText(
                 "Active Obstacles: " + gameInfo.getActiveObstacles( ),
-                gameInfo.offsetPosition( 8 )
+                gameInfo.offsetPosition( multiplier++ )
         );
         this.gr.drawText(
                 "Active Bombs: " + gameInfo.getActiveBombs( ),
-                gameInfo.offsetPosition( 9 )
+                gameInfo.offsetPosition( multiplier++ )
         );
         this.gr.drawText(
                 "Active Collisions: " + gameInfo.getActiveCollisions( ),
-                gameInfo.offsetPosition( 10 )
+                gameInfo.offsetPosition( multiplier++ )
         );
         this.gr.drawText(
-                "Missiles Used: " + gameInfo.getUsedMissiles( ),
-                gameInfo.offsetPosition( 11 )
+                "Missiles Used: " + gameInfo.getUsedMissiles( ) + " / " + gameInfo.getTotalMissiles( ),
+                gameInfo.offsetPosition( multiplier++ )
         );
     }
 

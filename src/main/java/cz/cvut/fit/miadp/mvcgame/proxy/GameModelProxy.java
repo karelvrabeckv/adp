@@ -2,6 +2,7 @@ package cz.cvut.fit.miadp.mvcgame.proxy;
 
 import java.util.List;
 
+import cz.cvut.fit.miadp.mvcgame.builder.Difficulty;
 import cz.cvut.fit.miadp.mvcgame.command.AbstractGameCommand;
 import cz.cvut.fit.miadp.mvcgame.model.IGameModel;
 import cz.cvut.fit.miadp.mvcgame.model.gameObjects.*;
@@ -29,6 +30,12 @@ public class GameModelProxy implements IGameModel {
     public void notifyObservers( ) {
         this.subject.notifyObservers( );
     }
+
+    @Override
+    public void changeDifficulty( String difficulty ) { this.subject.changeDifficulty( difficulty ); }
+
+    @Override
+    public void restart( ) { this.subject.restart( ); }
 
     @Override
     public void update( ) {
@@ -101,6 +108,11 @@ public class GameModelProxy implements IGameModel {
     @Override
     public List<GameObject> getGameObjects( ) {
         return this.subject.getGameObjects( );
+    }
+
+    @Override
+    public Difficulty getDifficulty() {
+        return subject.getDifficulty( );
     }
 
     @Override

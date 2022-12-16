@@ -8,6 +8,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import cz.cvut.fit.miadp.mvcgame.abstractFactory.GameObjectFactory_A;
 import cz.cvut.fit.miadp.mvcgame.abstractFactory.IGameObjectFactory;
+import cz.cvut.fit.miadp.mvcgame.builder.Difficulty;
+import cz.cvut.fit.miadp.mvcgame.builder.DifficultyBuilder;
+import cz.cvut.fit.miadp.mvcgame.builder.Director;
 import cz.cvut.fit.miadp.mvcgame.command.AbstractGameCommand;
 import cz.cvut.fit.miadp.mvcgame.config.MvcGameConfig;
 import cz.cvut.fit.miadp.mvcgame.model.gameObjects.*;
@@ -15,6 +18,7 @@ import cz.cvut.fit.miadp.mvcgame.observer.IObserver;
 
 public class GameModel implements IGameModel {
 
+    private Difficulty difficulty;
     private List<IObserver> observers;
     private IGameObjectFactory factory;
 
@@ -30,19 +34,39 @@ public class GameModel implements IGameModel {
     private Stack<AbstractGameCommand> executedCommands;
 
     public GameModel( ) {
+        this.difficulty = createDifficulty( MvcGameConfig.EASY_DIFFICULTY );
         this.observers = new ArrayList<IObserver>( );
         this.factory = new GameObjectFactory_A( this );
 
-        this.cannon = this.factory.createCannon( );
+        this.cannon = factory.createCannon( );
         this.missiles = new ArrayList<AbsMissile>( );
-        this.enemies = this.createEnemies( MvcGameConfig.NUM_OF_ENEMIES );
-        this.obstacles = this.createObstacles( MvcGameConfig.NUM_OF_OBSTACLES );
-        this.bombs = this.createBombs( MvcGameConfig.NUM_OF_BOMBS );
+        this.enemies = createEnemies( difficulty.getNumOfEnemies( ) );
+        this.obstacles = createObstacles( difficulty.getNumOfObstacles( ) );
+        this.bombs = createBombs( difficulty.getNumOfBombs( ) );
         this.collisions = new ArrayList<AbsCollision>( );
-        this.gameInfo = this.factory.createGameInfo( );
+        this.gameInfo = factory.createGameInfo( );
 
         this.unexecutedCommands = new LinkedBlockingQueue<AbstractGameCommand>( );
         this.executedCommands = new Stack<AbstractGameCommand>( );
+    }
+
+    private Difficulty createDifficulty( String difficulty ) {
+        Director director = new Director( );
+        DifficultyBuilder builder = new DifficultyBuilder( );
+
+        switch ( difficulty ) {
+            case MvcGameConfig.EASY_DIFFICULTY:
+                director.constructEasyDifficulty( builder );
+                break;
+            case MvcGameConfig.NORMAL_DIFFICULTY:
+                director.constructNormalDifficulty( builder );
+                break;
+            case MvcGameConfig.HARD_DIFFICULTY:
+                director.constructHardDifficulty( builder );
+                break;
+        }
+
+        return builder.getProduct( );
     }
 
     private List<AbsEnemy> createEnemies( int num ) {
@@ -75,14 +99,23 @@ public class GameModel implements IGameModel {
         return bombs;
     }
 
-//    private GameInfo createGameInfo( ) {
-//        Director director = new Director( );
-//        GameInfoBuilder builder = new GameInfoBuilder( );
-//
-//        director.constructVerboseBuilder( builder );
-//
-//        return builder.getProduct( );
-//    }
+    public void changeDifficulty( String difficulty ) {
+        this.difficulty = createDifficulty( difficulty );
+        restart( );
+    }
+
+    public void restart( ) {
+        cannon = factory.createCannon( );
+        missiles.clear( );
+        enemies.clear( );
+        obstacles.clear( );
+        bombs.clear( );
+        collisions.clear( );
+        gameInfo = factory.createGameInfo( );
+
+        unexecutedCommands.clear( );
+        executedCommands.clear( );
+    }
 
     public void update( ) {
         this.executedCommands( );
@@ -182,13 +215,17 @@ public class GameModel implements IGameModel {
     }
 
     private void addObjects( ) {
-        int numOfNewBombs = MvcGameConfig.NUM_OF_BOMBS - bombs.size( );
-        List<AbsBomb> newBombs = createBombs( numOfNewBombs );
-        bombs.addAll( newBombs );
-
-        int numOfNewEnemies = MvcGameConfig.NUM_OF_ENEMIES - enemies.size( ) - collisions.size( );
+        int numOfNewEnemies = difficulty.getNumOfEnemies( ) - enemies.size( ) - collisions.size( );
         List<AbsEnemy> newEnemies = createEnemies( numOfNewEnemies );
         enemies.addAll( newEnemies );
+
+        int numOfNewObstacles = difficulty.getNumOfObstacles( ) - obstacles.size( );
+        List<AbsObstacle> newObstacles = createObstacles( numOfNewObstacles );
+        obstacles.addAll( newObstacles );
+
+        int numOfNewBombs = difficulty.getNumOfBombs( ) - bombs.size( );
+        List<AbsBomb> newBombs = createBombs( numOfNewBombs );
+        bombs.addAll( newBombs );
     }
 
     public List<GameObject> getGameObjects( ) {
@@ -205,6 +242,7 @@ public class GameModel implements IGameModel {
         return gameObjects;
     }
 
+    public Difficulty getDifficulty( ) { return difficulty; }
     public AbsCannon getCannon( ) { return cannon; }
     public List<AbsMissile> getMissiles( ) {
         return this.missiles;
@@ -264,10 +302,14 @@ public class GameModel implements IGameModel {
     }
     public void cannonShoot( ) {
         List<AbsMissile> newMissiles = cannon.shoot( );
-        this.missiles.addAll( newMissiles ) ;
-        this.gameInfo.setUsedMissiles( this.gameInfo.getUsedMissiles() + newMissiles.size( ) );
+        int total = this.gameInfo.getUsedMissiles() + newMissiles.size( );
 
-        this.notifyObservers( );
+        if ( total <= difficulty.getTotalMissiles( ) ) {
+            this.missiles.addAll( newMissiles ) ;
+            this.gameInfo.setUsedMissiles( total );
+
+            this.notifyObservers( );
+        }
     }
 
     @Override
