@@ -3,7 +3,7 @@ package cz.cvut.fit.miadp.mvcgame.config;
 public class MvcGameConfig {
     // difficulty
     public static final String EASY_DIFFICULTY = "Easy";
-    public static final String NORMAL_DIFFICULTY = "Normal";
+    public static final String MEDIUM_DIFFICULTY = "Medium";
     public static final String HARD_DIFFICULTY = "Hard";
 
     // screen

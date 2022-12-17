@@ -4,13 +4,11 @@ public class DifficultyBuilder implements Builder {
 
     private Difficulty difficulty;
 
-    public DifficultyBuilder( ) {
-        reset( );
-    }
+    public DifficultyBuilder( ) { }
 
     @Override
-    public void reset( ) {
-        difficulty = new Difficulty( );
+    public void reset( Difficulty difficulty ) {
+        this.difficulty = difficulty;
     }
 
     @Override
@@ -49,9 +47,6 @@ public class DifficultyBuilder implements Builder {
     }
 
     public Difficulty getProduct( ) {
-        Difficulty difficulty = this.difficulty;
-        reset( );
-
         return difficulty;
     }
 

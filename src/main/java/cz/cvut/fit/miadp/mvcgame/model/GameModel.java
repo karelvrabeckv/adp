@@ -79,7 +79,7 @@ public class GameModel implements IGameModel {
             case MvcGameConfig.EASY_DIFFICULTY:
                 director.constructEasyDifficulty( builder );
                 break;
-            case MvcGameConfig.NORMAL_DIFFICULTY:
+            case MvcGameConfig.MEDIUM_DIFFICULTY:
                 director.constructNormalDifficulty( builder );
                 break;
             case MvcGameConfig.HARD_DIFFICULTY:

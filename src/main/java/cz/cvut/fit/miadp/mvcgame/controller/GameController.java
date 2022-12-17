@@ -39,7 +39,7 @@ public class GameController {
                     this.model.changeDifficulty( MvcGameConfig.EASY_DIFFICULTY );
                     break;
                 case "O":
-                    this.model.changeDifficulty( MvcGameConfig.NORMAL_DIFFICULTY );
+                    this.model.changeDifficulty( MvcGameConfig.MEDIUM_DIFFICULTY );
                     break;
                 case "P":
                     this.model.changeDifficulty( MvcGameConfig.HARD_DIFFICULTY );

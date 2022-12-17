@@ -1,6 +1,29 @@
 package cz.cvut.fit.miadp.mvcgame.builder;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Difficulty {
+
+    public enum Key { EASY, MEDIUM, HARD }
+
+    private final Key key;
+
+    private static Map<Key, Difficulty> DIFFICULTIES = new HashMap<>( );
+
+    static {
+        for ( Key key : Key.values( ) ) {
+            DIFFICULTIES.put( key, new Difficulty( key ) );
+        }
+    }
+
+    private Difficulty( Key key ) {
+        this.key = key;
+    }
+
+    public static Difficulty getInstance( Key key ) {
+        return DIFFICULTIES.get( key );
+    }
 
     private String name;
     private int maxTime;
@@ -9,8 +32,6 @@ public class Difficulty {
     private int numOfEnemies;
     private int numOfObstacles;
     private int numOfBombs;
-
-    public Difficulty( ) { }
 
     public String getName( ) {
         return name;

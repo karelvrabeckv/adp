@@ -11,7 +11,7 @@ public class Director {
     }
 
     public void constructEasyDifficulty( Builder builder ) {
-        builder.reset( );
+        builder.reset( Difficulty.getInstance( Difficulty.Key.EASY ) );
         builder.setName( MvcGameConfig.EASY_DIFFICULTY );
         builder.setMaxTime( 300 );
         builder.setScoreToReach( 50 );
@@ -22,8 +22,8 @@ public class Director {
     }
 
     public void constructNormalDifficulty( Builder builder ) {
-        builder.reset( );
-        builder.setName( MvcGameConfig.NORMAL_DIFFICULTY );
+        builder.reset( Difficulty.getInstance( Difficulty.Key.MEDIUM ) );
+        builder.setName( MvcGameConfig.MEDIUM_DIFFICULTY );
         builder.setMaxTime( 180 );
         builder.setScoreToReach( 40 );
         builder.setTotalMissiles( 100 );
@@ -33,7 +33,7 @@ public class Director {
     }
 
     public void constructHardDifficulty( Builder builder ) {
-        builder.reset( );
+        builder.reset( Difficulty.getInstance( Difficulty.Key.HARD ) );
         builder.setName( MvcGameConfig.HARD_DIFFICULTY );
         builder.setMaxTime( 60 );
         builder.setScoreToReach( 30 );
