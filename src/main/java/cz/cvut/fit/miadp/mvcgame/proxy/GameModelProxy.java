@@ -141,6 +141,11 @@ public class GameModelProxy implements IGameModel {
     }
 
     @Override
+    public IGameModel clone() {
+        return this.subject.clone( );
+    }
+
+    @Override
     public void registerCommand( AbstractGameCommand cmd ) {
         this.subject.registerCommand( cmd );
     }

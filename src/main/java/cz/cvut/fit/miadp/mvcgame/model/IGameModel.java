@@ -36,6 +36,7 @@ public interface IGameModel extends IObservable {
 
     public Object createMemento( );
     public void setMemento( Object memento );
+    public IGameModel clone( );
 
     public void registerCommand( AbstractGameCommand cmd );
     public void undoLastCommand( );

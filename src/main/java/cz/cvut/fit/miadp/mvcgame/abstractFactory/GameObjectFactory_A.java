@@ -66,13 +66,13 @@ public class GameObjectFactory_A implements IGameObjectFactory {
     }
 
     @Override
-    public Bomb_A createBomb() {
+    public Bomb_A createBomb( ) {
         Random random = new Random( );
 
         int x = random.nextInt(MvcGameConfig.MAX_X_BOUND - MvcGameConfig.MIN_X_BOUND + 1) + MvcGameConfig.MIN_X_BOUND;
         int y = random.nextInt(MvcGameConfig.MAX_Y_BOUND - MvcGameConfig.MIN_Y_BOUND + 1) + MvcGameConfig.MIN_Y_BOUND;
 
-        return new Bomb_A( new Position( x, y ), this );
+        return new Bomb_A( new Position( x, y ) );
     }
 
 }

@@ -14,4 +14,6 @@ public abstract class AbsBomb extends LifetimeLimitedGameObject {
         visitor.visitBomb( this );
     }
 
+    public abstract AbsBomb clone( );
+
 }

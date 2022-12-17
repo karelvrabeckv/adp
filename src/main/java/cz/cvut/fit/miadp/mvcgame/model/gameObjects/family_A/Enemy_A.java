@@ -14,9 +14,19 @@ public class Enemy_A extends AbsEnemy {
         this.factory = factory;
     }
 
+    public Enemy_A( Enemy_A enemy ) {
+        super( enemy.position.clone( ), enemy.type );
+        factory = enemy.factory;
+    }
+
     @Override
     public AbsCollision explode( ) {
         return this.factory.createCollision( this.position );
+    }
+
+    @Override
+    public AbsEnemy clone( ) {
+        return new Enemy_A( this );
     }
 
 }

@@ -33,16 +33,16 @@ public class GameController {
                     this.model.registerCommand( new CannonShootCmd( this.model ) );
                     break;
                 case "R":
-                    this.model.registerCommand( new RestartCmd( this.model ) );
+                    this.model.restart( );
                     break;
                 case "I":
-                    this.model.registerCommand( new ChangeDifficultyCmd( this.model, MvcGameConfig.EASY_DIFFICULTY ) );
+                    this.model.changeDifficulty( MvcGameConfig.EASY_DIFFICULTY );
                     break;
                 case "O":
-                    this.model.registerCommand( new ChangeDifficultyCmd( this.model, MvcGameConfig.NORMAL_DIFFICULTY ) );
+                    this.model.changeDifficulty( MvcGameConfig.NORMAL_DIFFICULTY );
                     break;
                 case "P":
-                    this.model.registerCommand( new ChangeDifficultyCmd( this.model, MvcGameConfig.HARD_DIFFICULTY ) );
+                    this.model.changeDifficulty( MvcGameConfig.HARD_DIFFICULTY );
                     break;
                 case "W":
                     this.model.registerCommand( new PowerCannonUpCmd( this.model ) );

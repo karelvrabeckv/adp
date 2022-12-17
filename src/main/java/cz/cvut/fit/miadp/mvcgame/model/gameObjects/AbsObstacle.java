@@ -14,4 +14,6 @@ public abstract class AbsObstacle extends LifetimeLimitedGameObject {
         visitor.visitObstacle( this );
     }
 
+    public abstract AbsObstacle clone( );
+
 }

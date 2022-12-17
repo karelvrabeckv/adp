@@ -50,6 +50,27 @@ public class GameModel implements IGameModel {
         this.executedCommands = new Stack<AbstractGameCommand>( );
     }
 
+    public GameModel( GameModel model ) {
+        cannon = model.cannon.clone( );
+
+        enemies = new ArrayList<AbsEnemy>( );
+        for ( AbsEnemy enemy : model.enemies ) {
+            enemies.add( enemy.clone( ) );
+        }
+
+        bombs = new ArrayList<AbsBomb>( );
+        for ( AbsBomb bomb : model.bombs ) {
+            bombs.add( bomb.clone( ) );
+        }
+
+        collisions = new ArrayList<AbsCollision>( );
+        for ( AbsCollision collision : model.collisions ) {
+            collisions.add( collision.clone( ) );
+        }
+
+        gameInfo = model.gameInfo.clone( );
+    }
+
     private Difficulty createDifficulty( String difficulty ) {
         Director director = new Director( );
         DifficultyBuilder builder = new DifficultyBuilder( );
@@ -331,26 +352,23 @@ public class GameModel implements IGameModel {
         }
     }
 
-    private class Memento {
-        private int score;
-        private int cannonX;
-        private int cannonY;
-        // GO positions
-    }
-
     public Object createMemento( ) {
-        Memento m = new Memento( );
-        m.score = this.gameInfo.getScore();
-        m.cannonX = this.getCannon( ).getPosition( ).getX( );
-        m.cannonY = this.getCannon( ).getPosition( ).getY( );
-        return m;
+        return clone( );
     }
 
     public void setMemento( Object memento ) {
-        Memento m = ( Memento ) memento;
-        this.gameInfo.setScore( m.score );
-        this.cannon.getPosition( ).setX( m.cannonX );
-        this.cannon.getPosition( ).setY( m.cannonY );
+        GameModel model = ( GameModel ) memento;
+
+        cannon = model.cannon;
+        enemies = model.enemies;
+        bombs = model.bombs;
+        collisions = model.collisions;
+        gameInfo = model.gameInfo;
+    }
+
+    @Override
+    public IGameModel clone( ) {
+        return new GameModel( this );
     }
 
     @Override

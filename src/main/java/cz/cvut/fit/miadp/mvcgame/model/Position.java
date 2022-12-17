@@ -5,8 +5,11 @@ public class Position {
     private int dimX = 0;
 	private int dimY = 0;
 	
-	public Position( ) {
+	public Position( ) { }
 
+	public Position( Position position ) {
+		dimX = position.dimX;
+		dimY = position.dimY;
 	}
 
 	public Position( int posX, int posY ) {
@@ -33,6 +36,10 @@ public class Position {
 	public void add( Vector vector ) {
 		this.setX( this.getX( ) + vector.getDX( ) );
 		this.setY( this.getY( ) + vector.getDY( ) );
+	}
+
+	public Position clone( ) {
+		return new Position( this );
 	}
 	
 }

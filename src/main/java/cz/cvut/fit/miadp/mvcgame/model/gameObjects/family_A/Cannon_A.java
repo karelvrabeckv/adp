@@ -17,13 +17,22 @@ public class Cannon_A extends AbsCannon {
     private int power;
     private List<AbsMissile> shootingBatch;
 
-    public Cannon_A( Position initialPosition, IGameObjectFactory factory ) {
-        this.position = initialPosition;
+    public Cannon_A( Position position, IGameObjectFactory factory ) {
+        this.position = position;
         this.factory = factory;
         this.power = MvcGameConfig.CANNON_INIT_POWER;
         this.angle = MvcGameConfig.CANNON_INIT_ANGLE;
         this.shootingMode = AbsCannon.SINGLE_SHOOTING_MODE;
         this.shootingBatch = new ArrayList<AbsMissile>();
+    }
+
+    public Cannon_A( Cannon_A cannon ) {
+        position = cannon.position.clone( );
+        factory = cannon.factory;
+        power = cannon.power;
+        angle = cannon.angle;
+        shootingMode = cannon.shootingMode;
+        shootingBatch = cannon.shootingBatch;
     }
 
     @Override
@@ -84,6 +93,11 @@ public class Cannon_A extends AbsCannon {
     @Override
     public void primitiveShoot() {
         this.shootingBatch.add( this.factory.createMissile( this.angle, this.power ) );
+    }
+
+    @Override
+    public AbsCannon clone( ) {
+        return new Cannon_A( this );
     }
 
 }

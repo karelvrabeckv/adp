@@ -5,7 +5,7 @@ import cz.cvut.fit.miadp.mvcgame.visitor.IVisitor;
 
 public abstract class AbsEnemy extends LifetimeLimitedGameObject {
 
-    private int type;
+    protected int type;
 
     protected AbsEnemy( Position position, int type ) {
         super( position );
@@ -22,5 +22,7 @@ public abstract class AbsEnemy extends LifetimeLimitedGameObject {
     }
 
     public abstract AbsCollision explode( );
+
+    public abstract AbsEnemy clone( );
 
 }

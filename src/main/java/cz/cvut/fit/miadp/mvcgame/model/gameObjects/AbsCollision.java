@@ -14,4 +14,6 @@ public abstract class AbsCollision extends LifetimeLimitedGameObject {
         visitor.visitCollision( this );
     }
 
+    public abstract AbsCollision clone( );
+
 }

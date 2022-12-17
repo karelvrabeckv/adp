@@ -19,12 +19,26 @@ public class GameInfo_A extends AbsGameInfo {
         this.movingStrategy = AbsGameInfo.SIMPLE_MOVING_STRATEGY;
     }
 
+    public GameInfo_A( GameInfo_A gameInfo ) {
+        position = gameInfo.position;
+        model = gameInfo.model;
+        start = gameInfo.start;
+        score = gameInfo.score;
+        usedMissiles = gameInfo.usedMissiles;
+        movingStrategy = gameInfo.movingStrategy;
+    }
+
     @Override
     public Position offsetPosition( int multiplier ) {
         Position position = new Position( this.position.getX( ), this.position.getY( ) );
         position.add( new Vector( 0, multiplier * MvcGameConfig.GAME_INFO_OFFSET ) );
 
         return position;
+    }
+
+    @Override
+    public AbsGameInfo clone( ) {
+        return new GameInfo_A( this );
     }
 
 }

@@ -44,4 +44,6 @@ public abstract class AbsCannon extends GameObject {
         visitor.visitCannon( this );
     }
 
+    public abstract AbsCannon clone( );
+
 }

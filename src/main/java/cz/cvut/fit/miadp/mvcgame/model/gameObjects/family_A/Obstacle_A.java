@@ -9,4 +9,13 @@ public class Obstacle_A extends AbsObstacle {
         super( position );
     }
 
+    public Obstacle_A( Obstacle_A obstacle ) {
+        super( obstacle.position.clone( ) );
+    }
+
+    @Override
+    public AbsObstacle clone( ) {
+        return new Obstacle_A( this );
+    }
+
 }

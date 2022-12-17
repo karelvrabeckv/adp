@@ -9,4 +9,13 @@ public class Collision_A extends AbsCollision {
         super( position );
     }
 
+    public Collision_A( Collision_A collision ) {
+        super( collision.position.clone( ) );
+    }
+
+    @Override
+    public AbsCollision clone( ) {
+        return new Collision_A( this );
+    }
+
 }

@@ -92,4 +92,6 @@ public abstract class AbsGameInfo extends GameObject {
         visitor.visitGameInfo( this );
     }
 
+    public abstract AbsGameInfo clone( );
+
 }
